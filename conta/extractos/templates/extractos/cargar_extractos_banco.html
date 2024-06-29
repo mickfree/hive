@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Cargar Extractos de Banco</h1>
+    <p>Utiliza el formulario a continuación para cargar un archivo de extractos bancarios.</p>
+    
+    <!-- Formulario para cargar extractos bancarios -->
+    <form method="post" enctype="multipart/form-data" 
+          hx-post="{% url 'cargar_extractos_banco' %}" 
+          hx-target="#formulario-extracto" hx-swap="outerHTML">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Cargar Extractos</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base_inventario.html" %}
+
+{% block title %}Inventario{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Inventario</h1>
+    <div class="mb-3">
+        <a href="{% url 'upload_excel' %}" class="btn btn-primary">Subir Archivo Excel</a>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Equipos</h2>
+            <p>Total: {{ equipos_count }}</p>
+        </div>
+        <div class="col-md-4">
+            <h2>EPPS</h2>
+            <p>Total: {{ epps_count }}</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Transporte</h2>
+            <p>Total: {{ transporte_count }}</p>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <h2>Materiales</h2>
+            <p>Total: {{ materiales_count }}</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Consumibles</h2>
+            <p>Total: {{ consumibles_count }}</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Alimentos</h2>
+            <p>Total: {{ alimentos_count }}</p>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <h2>Mano de Obra</h2>
+            <p>Total: {{ mano_de_obra_count }}</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Herramientas</h2>
+            <p>Total: {{ herramientas_count }}</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Misc</h2>
+            <p>Total: {{ misc_count }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

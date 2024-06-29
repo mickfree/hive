@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Facturas Asociadas <strong>{{ orden_venta.proyecto }} - {{ orden_venta.codigosap }}</strong></h3>
+        <a href="{% url 'upload_pdf_cobro' ordenventa_id=orden_venta.id %}" class="btn btn-primary">Subir Factura</a>
+    </div>
+    {% if facturas %}
+        <div class="list-group">
+            {% for factura in facturas %}
+            <div class="list-group-item list-group-item-action">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>
+                        {{ factura.serie_correlativo }} - 
+                        Fecha de Emisión: {{ factura.fecha_emision }} - 
+                        Monto neto a cobrar: {{ factura.monto_neto_cobrar }}
+                    </span>
+                    <!-- Contenedor para los botones de acción -->
+                    <div class="action-buttons">
+                        <a href="#" onclick="toggleEditForm({{ factura.id }});" class="badge badge-info badge-pill">Editar</a>
+                        <a href="{% url 'eliminar_factura' factura.id %}" class="badge badge-danger badge-pill" onclick="return confirm('¿Estás seguro de que deseas eliminar esta factura?');">Eliminar</a>
+                    </div>
+                </div>
+                <div id="formulario-editar-{{ factura.id }}" class="mt-2"></div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay facturas asociadas a esta orden de venta.</p>
+    {% endif %}
+</div>
+
+<script src="https://unpkg.com/htmx.org"></script>
+<script>
+document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+});
+</script>
+<script>
+    function toggleEditForm(facturaId) {
+        var formContainerId = "formulario-editar-" + facturaId;
+        var formContainer = document.getElementById(formContainerId);
+        if (formContainer.innerHTML.trim() !== "") {
+            formContainer.innerHTML = "";
+        } else {
+            htmx.ajax('GET', `{% url 'editar_factura' 9999 %}`.replace('9999', facturaId), formContainer);
+        }
+    }
+</script>
+
+{% endblock %}

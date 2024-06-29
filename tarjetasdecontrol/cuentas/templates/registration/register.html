@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+<style>
+    /* Estilos adicionales aquí */
+    .register-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .form-group button {
+        width: 100%; /* Hace que el botón abarque todo el ancho del formulario */
+        padding: 10px; /* Añade un poco de padding para hacer el botón más grande */
+        border-radius: 5px; /* Bordes redondeados para el botón */
+        font-size: 16px; /* Aumenta el tamaño de la fuente para mejorar la legibilidad */
+        background-color: #007bff; /* Color de fondo del botón */
+        color: white; /* Color del texto del botón */
+        border: none; /* Elimina el borde del botón */
+    }
+
+    .form-group button:hover {
+        background-color: #0056b3; /* Oscurece el botón al pasar el mouse */
+    }
+</style>
+
+<div class="register-container">
+    <h2>Registro</h2>
+    <form method="post" class="form-horizontal">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary">Registrar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

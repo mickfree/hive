@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Extractos para el Banco: {{ banco.nombre_banco }}</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fecha de Operación</th>
+                <th>Referencia</th>
+                <th>Importe</th>
+                <th>ITF</th>
+                <th>Número de Movimiento</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for extracto in extractos %}
+            <tr>
+                <td>{{ extracto.fecha_operacion }}</td>
+                <td>{{ extracto.referencia }}</td>
+                <td>{{ extracto.importe }}</td>
+                <td>{{ extracto.itf }}</td>
+                <td>{{ extracto.numero_movimiento }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base_home.html' %}
+
+{% block title %}Visión General de Proyectos{% endblock %}
+{% block page_title %}<h1 class="text-center mb-0">Visión General de Proyectos</h1>{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for project in projects %}
+            <div class="col">
+                <div class="card h-100">
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="Imagen del Proyecto">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ project.project_name }}</h5>
+                        <p class="card-text">Cliente: {{ project.client.client_name }}</p>
+                        <p class="card-text">Contratista: {{ project.contractor.contractor_name }}</p>
+                        <p class="card-text">Días desde el inicio: {{ project.days_since_start }}</p>
+                        <p class="card-text">Presupuesto Total: ${{ project.total_budget }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Fecha de inicio: {{ project.start_date }}</small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

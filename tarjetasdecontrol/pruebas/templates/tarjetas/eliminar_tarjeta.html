@@ -1,0 +1,11 @@
+<!-- templates/tarjetas/eliminar_tarjeta.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>Eliminar Tarjeta</h2>
+<p>¿Estás seguro de que quieres eliminar la tarjeta "{{ tarjeta.titulo }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a href="{% url 'new_lista_tarjetas' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

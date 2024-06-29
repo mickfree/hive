@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %} Lista de Proveedores {% endblock %}
+
+{% block styles %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css"/>
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Proveedores</h2>
+    <a href="{% url 'proveedor_create' %}" class="btn btn-primary mb-3">Agregar Nuevo Proveedor</a>
+    <table id="proveedoresTable" class="table table-bordered table-hover display">
+        <thead class="thead-light">
+            <tr>
+                <th>Nombre del Proveedor</th>
+                <th>RUC/DNI</th>
+                <th>Nombre del Banco</th>
+                <th>Moneda</th>
+                <th>Número de Cuenta</th>
+                <th>Total Asignado</th> <!-- Nueva columna para total asignado -->
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for proveedor in proveedores %}
+            <tr>
+                <td>{{ proveedor.nombre_proveedor }}</td>
+                <td>{{ proveedor.ruc_dni }}</td>
+                <td>{{ proveedor.nombre_banco }}</td>
+                <td>
+                    {% if proveedor.moneda == 1 %}
+                        Dólar
+                    {% elif proveedor.moneda == 0 %}
+                        Sol
+                    {% endif %}
+                </td>
+                <td>{{ proveedor.nro_cuenta }}</td>
+                <td>{{ proveedor.total_asignado }}</td> <!-- Mostrar total asignado -->
+                <td>
+                    <a href="{% url 'proveedor_detail' proveedor.pk %}" class="btn btn-sm btn-info">Caja</a> <!-- Botón para ver detalles -->
+                    <a href="{% url 'proveedor_update' proveedor.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'proveedor_delete' proveedor.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No hay proveedores registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables JS -->
+<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#proveedoresTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json"
+            }
+        });
+    });
+</script>
+{% endblock %}

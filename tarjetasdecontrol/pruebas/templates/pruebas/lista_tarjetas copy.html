@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% load l10n %}
+
+{% block title %}Lista de Tarjetas{% endblock %}
+
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Roboto');
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .content-container {
+        font-size: 14px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .title-container {
+        width: 100%;
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        border-radius: 0.5rem;
+        font-size: 1.5em;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        box-shadow: 0 2px 15px rgba(64, 64, 64, .7);
+        border-radius: 12px 12px 0 0;
+        overflow: hidden;
+        margin: 0;
+    }
+
+    td, th {
+        padding: 10px 15px;
+        text-align: center;
+        color: black !important;
+    }
+
+    th {
+        background-color: black !important;
+        color: #fafafa !important;
+        font-family: 'Open Sans', Sans-serif;
+        font-weight: bolder;
+        text-transform: uppercase;
+    }
+
+    tr {
+        background-color: #fafafa !important;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    tr:nth-child(even) {
+        background-color: #eeeeee !important;
+    }
+
+    tbody {
+        background-color: rgba(255, 255, 255, 0.55) !important;
+    }
+
+    .btn-order {
+        font-size: 1.5em;
+        color: white;
+        text-decoration: none;
+        padding: 0 5px;
+    }
+
+    .btn-order:hover {
+        color: #ffcc00;
+    }
+
+    h2 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+
+    {% for tarjeta in tarjetas %}
+    <div class="title-container">
+        Tarjeta de control de {{ tarjeta.usuario.username|capfirst }} - {{ tarjeta.fecha|date:"l, d \d\e F \d\e Y" }}
+    </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Verbo</th>
+                    <th>Objeto</th>
+                    <th>Orden de Venta</th>
+                    <th>Cliente</th>
+                    <th>Hora de Inicio</th>
+                    <th>Tiempo de Tarea</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in tarjeta.tareas_con_hora %}
+                <tr>
+                    <td>{{ item.tarea.verbo }}</td>
+                    <td>{{ item.tarea.objeto }}</td>
+                    <td>{{ item.tarea.orden_venta }}</td>
+                    <td>{{ item.tarea.cliente }}</td>
+                    <td>{{ item.start_time|date:"H:i" }}</td>
+                    <td>{{ item.tarea.tiempo_tarea }}</td>
+                    <td>
+                        <a href="{% url 'cambiar_orden' tarjeta.id item.tarea.id item.tarea.neworden_set.first.order|add:'-1' %}" class="btn-order">⬆️</a>
+                        <a href="{% url 'cambiar_orden' tarjeta.id item.tarea.id item.tarea.neworden_set.first.order|add:'1' %}" class="btn-order">⬇️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const upButtons = document.querySelectorAll('.btn-order');
+    upButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Clicked:', this.href);
+            // Aquí también puedes añadir una solicitud AJAX para actualizar el orden sin recargar la página
+        });
+    });
+});
+</script>
+{% endblock %}

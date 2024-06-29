@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Tareas{% endblock %}
+
+{% block extra_css %}
+<style>
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Roboto');
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.content-container {
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    box-shadow: 0 2px 15px rgba(64, 64, 64, .7);
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+    margin: 0;
+}
+
+td, th {
+    padding: 10px 15px;
+    text-align: center;
+}
+
+th {
+    background-color: black;
+    color: #fafafa;
+    font-family: 'Open Sans', Sans-serif;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+tr {
+    background-color: #fafafa;
+    font-family: 'Montserrat', sans-serif;
+}
+
+tr:nth-child(even) {
+    background-color: #eeeeee;
+}
+
+tbody {
+    background-color: rgba(255, 255, 255, 0.55);
+}
+
+.btn-sm {
+    font-size: 12px;
+}
+
+.btn-create {
+    background-color: #cf5a0d; /* Color para crear */
+    color: white;
+    border: none;
+}
+
+.btn-create:hover {
+    background-color: #218838; /* Verde oscuro en hover */
+    color: white;
+}
+
+.btn-edit {
+    background-color: #007bff; /* Azul para editar */
+    color: white;
+    border: none;
+}
+
+.btn-edit:hover {
+    background-color: #0056b3; /* Azul oscuro en hover */
+    color: white;
+}
+
+.btn-delete {
+    background-color: #dc3545; /* Rojo para eliminar */
+    color: white;
+    border: none;
+}
+
+.btn-delete:hover {
+    background-color: #c82333; /* Rojo oscuro en hover */
+    color: white;
+}
+
+.btn-assign {
+    background-color: #17a2b8; /* Cian para asignar */
+    color: white;
+    border: none;
+}
+
+.btn-assign:hover {
+    background-color: #117a8b; /* Cian oscuro en hover */
+    color: white;
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+    .content-container {
+        overflow-x: auto; /* Añade scroll horizontal */
+    }
+
+    table, thead, tbody, th, td, tr {
+        display: block; /* Hace que la tabla sea display block en pantallas pequeñas */
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr {
+        margin: 0 0 1rem 0; /* Añade margen entre filas */
+        border: 1px solid #ccc;
+    }
+
+    td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left; /* Alinea el texto a la izquierda */
+    }
+
+    td:before {
+        position: absolute;
+        top: 50%;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        transform: translateY(-50%);
+        content: attr(data-label); /* Usando data-label para mostrar el encabezado */
+        font-weight: bold;
+        color: #333;
+    }
+
+    td:last-child {
+        border-bottom: 0;
+    }
+
+    /* Mostrar siempre el botón "Crear Tarea" */
+    th:last-child {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    th:last-child a {
+        margin-top: 10px; /* Espacio entre el título de la columna y el botón */
+    }
+
+    td[data-label="Acciones"] a {
+        display: block;
+        margin: 5px 0; /* Espacio entre botones en la vista móvil */
+    }
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Verbo</th>
+                <th>Objeto</th>
+                <th>Gestión</th>
+                <th>Tiempo de Tarea</th>
+                <th>UND Medida</th>
+                <th>
+                    
+                    <a class="btn btn-create" href="{% url 'new_nueva_tarea' %}">Crear Tarea</a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tarea in tareas %}
+            <tr>
+                <td data-label="Verbo">{{ tarea.verbo }}</td>
+                <td data-label="Objeto">{{ tarea.objeto }}</td>
+                <td data-label="Gestión">{{ tarea.get_gestion_tipo_display }}</td>
+                <td data-label="Tiempo de Tarea">{{ tarea.tiempo_tarea }}</td>
+                <td data-label="UND Medida">{{ tarea.unidad_de_medida }}</td>
+                <td data-label="Acciones">
+                    <a class="btn btn-sm btn-edit" href="{% url 'new_editar_tarea' tarea.id %}">Editar</a>
+                    <a class="btn btn-sm btn-assign" href="{% url 'assign_resource' tarea.id %}">Asignar Recursos</a>
+                    <a class="btn btn-sm btn-delete" href="{% url 'new_eliminar_tarea' tarea.id %}">Eliminar</a>
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

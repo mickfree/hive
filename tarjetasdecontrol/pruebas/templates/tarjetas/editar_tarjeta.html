@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Tarjeta{% endblock %}
+
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Roboto');
+
+    .content-container {
+        font-size: 14px;
+        padding: 20px;
+        margin: 0;
+    }
+
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 15px rgba(64, 64, 64, .7);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 10px;
+        font-size: 1em;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="form-container">
+        <h2>Editar Tarjeta</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Actualizar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

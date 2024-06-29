@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-4">
+    <div class="row" >
+        <h1 class="mb-4">Órdenes de Compra</h1>
+        <a href="{% url 'cronograma_ordenes_compra' %}">Semaforo</a>
+    </div>
+    <form action="{% url 'filtrar_ordenes_pago_por_fecha' %}" method="get" class="mb-4">
+        <div class="form-group mb-3">
+            <label for="fecha_pago" class="form-label">Fecha de Pago:</label>
+            <input type="date" id="fecha_pago" name="fecha_pago" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-secondary">Ver Órdenes de Pago por Fecha</button>
+    </form>
+    
+    <!-- Formulario de Filtro con Mejoras -->
+    <form id="filtro-ordenes-venta" class="mb-3" hx-get="{% url 'lista_ordenes_venta' %}" hx-target="#tabla-ordenes-venta" hx-trigger="keyup delay:500ms" style="margin-bottom: 20px;">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="codigosap">Código SAP:</label>
+                    <input type="text" id="codigosap" name="codigosap" class="form-control" placeholder="Filtrar al escribir...">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="proyecto">Proyecto:</label>
+                    <input type="text" id="proyecto" name="proyecto" class="form-control" placeholder="Filtrar al escribir...">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Div para cargar dinámicamente la tabla de órdenes de venta -->
+    <div hx-get="{% url 'lista_ordenes_venta' %}" hx-trigger="load" id="tabla-ordenes-venta">
+        <!-- La tabla se cargará aquí mediante HTMX -->
+    </div>
+</div>
+
+{% endblock %}

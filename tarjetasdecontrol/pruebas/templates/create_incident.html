@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Incidencia{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="btn-container mt-3">
+            <button type="submit" class="btn btn-primary" name="save">Guardar</button>
+            <button type="submit" class="btn btn-primary" name="save_and_add_another">Guardar y crear otra</button>
+            <a href="{% url 'lista_tarjetas' tarjeta.id %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

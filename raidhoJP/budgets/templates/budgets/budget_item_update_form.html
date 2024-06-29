@@ -1,0 +1,32 @@
+{% extends "base_budget.html" %}
+
+{% block title %}Editar Cantidades de Ítems{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">Cantidades: {{ object.project.project_name }}</h2>
+    <form method="post">
+      {% csrf_token %}
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>Inventario</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+            <tr>
+              <td>{{ item.inventario.descripcion }}</td>
+              <td>
+                <input type="number" name="{{ item.pk }}-cantidad" value="{{ item.cantidad }}" class="form-control">
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+      <a href="{% url 'budget-list' %}" class="btn btn-secondary mt-3">Cancelar</a>
+    </form>
+  </div>
+{% endblock %}

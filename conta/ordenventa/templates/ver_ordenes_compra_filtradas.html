@@ -1,0 +1,22 @@
+<!-- ver_ordenes_compra_filtradas.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Órdenes de Compra para la fecha: {{ fecha }}</h2>
+{% if ordenes_compra %}
+    <table>
+        <!-- Cabeceras de tu tabla -->
+        <tbody>
+            {% for orden in ordenes_compra %}
+            <tr>
+                <!-- Datos de tu orden de compra -->
+                <td>{{ orden.desc_articulo }}</td>
+                <!-- Más datos según necesites -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No se encontraron órdenes de compra para esta fecha.</p>
+{% endif %}
+{% endblock %}

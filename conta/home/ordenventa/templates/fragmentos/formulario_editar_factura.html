@@ -1,0 +1,8 @@
+<!-- Asegúrate de que este template esté configurado correctamente -->
+<form hx-post="{% url 'editar_factura' factura_id %}" hx-target="#formulario-editar-{{ factura_id }}" hx-swap="outerHTML" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success">
+        <i class="fas fa-save"></i></button>
+    
+</form>

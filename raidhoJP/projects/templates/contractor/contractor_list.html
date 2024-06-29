@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h1 class="mb-4">Contractors</h1>
+    <div class="list-group">
+      {% for contractor in object_list %}
+        <a href="{% url 'contractor_detail' contractor.pk %}" class="list-group-item list-group-item-action">
+          {{ contractor.contractor_name }}
+        </a>
+      {% endfor %}
+    </div>
+    <div class="mt-4">
+      <a href="{% url 'contractor_add' %}" class="btn btn-success">Añadir nuevo contratista</a>
+    </div>
+  </div>
+{% endblock %}

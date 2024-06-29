@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %} Orden Venta {% endblock %}
+
+{% block styles %}
+<!-- DataTables CSS with Bootstrap integration -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-12 d-flex justify-content-between align-items-center mb-4">
+            <h2>Órdenes de Venta</h2>
+            <div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearOrdenVentaModal">
+                    Crear Nueva Orden de Venta
+                </button>
+                <!-- Botón para ver todos los items -->
+                <a href="{% url 'item_list' %}" class="btn btn-secondary">
+                    Ver Todos los Ítems
+                </a>
+            </div>
+        </div>
+        
+        <!-- Modal del Formulario de Creación -->
+        <div class="modal fade" id="crearOrdenVentaModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel">Crear Nueva Orden de Venta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{% url 'ordenventa-crud' %}">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Órdenes de Venta -->
+        <div class="col-lg-12 mb-4">
+            <table id="ordenesVentaTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Código SAP</th>
+                        <th>Proyecto</th>
+                        <th>Observación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for orden_venta in ordenes_venta %}
+                    <tr class="{% if orden_venta.estado == 'INICIO' %}bg-inicio{% elif orden_venta.estado == 'PROCESO' %}bg-proceso{% elif orden_venta.estado == 'TERMINADO' %}bg-terminado{% endif %}">
+                        <td>{{ orden_venta.codigosap }}</td>
+                        <td>{{ orden_venta.proyecto }}</td>
+                        <td>{{ orden_venta.observacion }}</td>
+                        <td>
+                            <a href="{% url 'procesar_orden_venta_excel' orden_venta.id %}" class="btn btn-success btn-sm" title="Crear ítem"><i class="fas fa-plus-circle"></i></a>
+                            <a href="{% url 'ver_facturas_por_ordenventa' orden_venta.id %}" class="btn btn-info btn-sm" title="Ver Facturas"><i class="fas fa-file-invoice-dollar"></i></a>
+                            <a href="javascript:void(0);" class="btn btn-danger btn-sm delete-btn" data-ordenventa-id="{{ orden_venta.id }}" title="Eliminar"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#ordenesVentaTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/Spanish.json"
+            }
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(item => {
+        item.addEventListener('click', event => {
+            const button = event.target.closest('.delete-btn');
+            const ordenVentaId = parseInt(button.getAttribute('data-ordenventa-id'), 10);
+            if (!isNaN(ordenVentaId)) {
+                if (confirm('¿Estás seguro de que deseas eliminar esta orden de venta?')) {
+                    window.location.href = "{% url 'ordenventa-crud' %}?action=delete&delete=" + ordenVentaId;
+                }
+            } else {
+                alert("ID de orden de venta no válido");
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Editar Tarea{% endblock %}
+
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Roboto');
+
+    .content-container {
+        font-size: 14px;
+        padding: 20px;
+        margin: 0;
+    }
+
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 15px rgba(64, 64, 64, .7);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 10px;
+        font-size: 1em;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+        padding: 10px;
+        font-size: 1em;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        width: 100%;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        color: white;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="form-container">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="btn-container mt-3">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a class="btn btn-secondary" href="{% url 'new_lista_tareas' %}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

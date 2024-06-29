@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}JP Sistema Contable{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://bootswatch.com/5/morph/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        @keyframes fadeInAnimation {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://wallpapercave.com/wp/wp5418527.jpg');
+            background-size: cover;
+            padding-top: 35px;
+            animation: fadeInAnimation 0.5s ease-out forwards;
+        }
+        .sidebar ul {
+            list-style-type: none; /* Elimina los marcadores de lista */
+            padding: 0; /* Remueve el padding predeterminado */
+            margin: 0; /* Remueve el margen predeterminado */
+        }
+
+        .sidebar li {
+            padding: 10px; /* Ajusta el padding según necesites */
+            text-align: left; /* Alineación del texto e íconos dentro de la barra lateral */
+        }
+        .sidebar {
+            height: 100vh;
+            width: 220px;
+            position: fixed;
+            top: 0;
+            left: -250px; /* Oculta inicialmente la sidebar */
+            background: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente para el efecto blur */
+            backdrop-filter: blur(10px); /* Efecto de desenfoque */
+            transition: all 0.5s ease;
+            padding-top: 20px;
+            border-radius: 0 30px 30px 0; /* Bordes redondeados */
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3); /* Sombra para efecto flotante */
+            z-index: 1000;
+            color: black; /* Cambia el color del texto a negro */
+        }
+        .sidebar.active {
+            left: 0; /* Muestra la sidebar */
+        }
+        .sidebar h2, .sidebar li a {
+            text-decoration: none;
+            display: block;
+            padding: 20px; /* Aumento del padding para más espacio */
+            font-size: 20px; /* Tamaño de letra más grande */
+            transition: all 0.3s ease;
+        }
+        .sidebar li a {
+            display: flex;
+            align-items: center;
+            color: black; /* Asegura que el texto sea negro */
+        }
+        .sidebar li a i {
+            font-size: 24px; /* Tamaño de ícono más grande */
+            margin-right: 15px; /* Espacio entre ícono y texto */
+            color: black; /* Asegura que el ícono sea negro */
+        }
+        .content {
+            transition: margin-left 0.5s ease;
+            margin-left: 0; /* Se ajusta con la animación */
+            padding: 20px;
+        }
+        .content.active {
+            margin-left: 227px; /* Se ajusta cuando la sidebar es visible */
+        }
+        .toggle-btn {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: left 0.5s ease;
+        }
+        .toggle-btn.active {
+            left: 250px; /* Mismo ancho que la sidebar */
+        }
+
+        @media (max-width: 768px) {
+            .toggle-btn.active {
+                left: 200px; /* Ajuste para dispositivos móviles, si estás usando una sidebar más pequeña */
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+                left: -200px; /* Ajuste para dispositivos móviles */
+            }
+            .sidebar.active {
+                left: 0;
+            }
+            .content.active {
+                margin-left: 200px;
+            }
+            .custom-modal-size {
+    max-width: 90%; /* Ajusta según sea necesario */
+            }
+
+            @media (max-width: 768px) {
+                .custom-modal-size {
+                    max-width: 100%;
+                    margin: 20px;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="toggle-btn">
+    <i class="fas fa-bars fa-2x"></i>
+</div>
+
+<div class="sidebar">
+    <h2>   </h2>
+    <ul>
+        <li><a href="/ordenventa"><i class="fas fa-file-invoice"></i> Venta</a></li>
+        <li><a href="/ordencompra"><i class="fas fa-shopping-cart"></i> Compras y pagos</a></li>
+        <li><a href="/inventario/inventario"><i class="fas fa-warehouse"></i>Inventario</a></li>
+        <li><a href="/reportes/reportes"><i class="fas fa-chart-line"></i> Reportes y registros</a></li>
+        <li><a href="/cronogramas/crear_cronograma"><i class="fas fa-calendar-alt"></i> Cronogramas</a></li>
+    </ul>
+</div>
+
+<div class="content">
+
+    {% block content %}
+    <!-- Contenido de la página específica -->
+    {% endblock %}
+</div>
+
+<script>
+    document.querySelector('.toggle-btn').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+        document.querySelector('.content').classList.toggle('active');
+        this.classList.toggle('active'); // Añade o quita la clase 'active' al botón
+    });
+    document.addEventListener('mousemove', function(e) {
+    // Activa la sidebar si el cursor está a 50px o menos del borde izquierdo de la ventana
+    if (e.clientX <= 50) {
+        document.querySelector('.sidebar').classList.add('active');
+        document.querySelector('.content').classList.add('active');
+        document.querySelector('.toggle-btn').classList.add('active');
+    }
+});
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/htmx.org"></script>
+
+
+</body>
+</html>
+
+
+
+

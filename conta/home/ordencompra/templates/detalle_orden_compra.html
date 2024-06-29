@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1>Ordenes de Compra para {{ orden_venta.codigosap }} - {{ orden_venta.proyecto }}</h1>
+    <ul>
+        {% for orden_compra in ordenes_compra %}
+            <li>{{ orden_compra.desc_articulo }} - Cantidad: {{ orden_compra.cantidad }} - Código SAP: {{ orden_compra.codigo_sap }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'lista_ordenes_venta' %}">Volver a Órdenes de Compra</a>
+
+    {% endblock %}
+

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Editar Tarjeta</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p>Fecha en el formulario: {{ form.fecha.value }}</p>  <!-- Depuración -->
+    <button type="submit" class="btn btn-primary">Actualizar</button>
+</form>
+{% endblock %}

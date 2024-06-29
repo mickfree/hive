@@ -1,0 +1,9 @@
+venv
+.venv
+start.sh
+db.sqlite3
+**/__pycache__/
+**/migrations/
+**/*.pdf
+**/*.img
+!**/static/*.png

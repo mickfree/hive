@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    /* Estilos existentes */
+    .table-responsive thead th {
+        position: sticky;
+        top: 0;
+        background-color: #fff;
+        z-index: 1;
+    }
+    .table-responsive {
+        max-height: 90vh;
+        overflow-y: auto;
+        padding-top: 10px;
+    }
+    .input-corto {
+        width: 60px;
+    }
+    .input-medio {
+        width: 100px;
+    }
+    input[type="number"] {
+        text-align: right;
+    }
+    .input-proveedor {
+        width: 150px; /* Puedes ajustar este valor según tus necesidades */
+    }
+    .table th, .table td {
+        padding: 5px;
+        white-space: nowrap;
+    }
+    /* Estilo adicional para la cabecera */
+    .header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .header-flex h2 {
+        margin-bottom: 0; /* Elimina el margen inferior del título para alinearlo con el botón */
+    }
+</style>
+{% endblock %}
+
+
+{%  block content %}
+
+<div class="header-flex">
+    <h2>Órdenes de Compra {% if ordenventa %}para {{ ordenventa.observacion }}{% else %}General{% endif %}</h2>
+    <a href="{% if ordenventa %}{% url 'ver_ordenes_pago' ordenventa.id %}{% else %}{% url 'ver_todas_ordenes_pago' %}{% endif %}" class="btn btn-info">Ver Órdenes de Pago</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Clase</th>
+                <th>Tipo de pago</th>
+                <th>Proveedor</th>
+                <th>Desc. Artículo</th>
+                <th>UND</th>
+              <!--  <th>SAP</th> -->
+                <th>Precio</th>
+                <th>Detr (%)</th>
+                <th>Total</th>
+               <!--<th>Cuotas</th>-->
+                <th>Fecha depos</th>
+                <th>ACT</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orden in ordenes_compra %}
+            <tr>    
+                <td>
+                    <select name="clase" form="form-{{ orden.id }}">
+                        <option value="Bancos" {% if orden.clase == "Bancos" %} selected {% endif %}>Bancos</option>
+                        <option value="Planillas" {% if orden.clase == "Planillas" %} selected {% endif %}>Planillas</option>
+                        <option value="Servicios" {% if orden.clase == "Servicios" %} selected {% endif %}>Servicios</option>
+                        <option value="Sunat" {% if orden.clase == "Sunat" %} selected {% endif %}>Sunat</option>
+                        <option value="Proveedores" {% if orden.clase == "Proveedores" %} selected {% endif %}>Proveedores</option>
+                    </select>                    
+                </td>
+                <td>
+                    <select name="tipo_pago" form="form-{{ orden.id }}">
+                        <option value="Prestamo" {% if orden.tipo_pago == "Prestamo" %} selected {% endif %}>Préstamo</option>
+                        <option value="Tarjeta" {% if orden.tipo_pago == "Tarjeta" %} selected {% endif %}>Tarjeta</option>
+                        <option value="Sueldo" {% if orden.tipo_pago == "Sueldo" %} selected {% endif %}>Sueldo</option>
+                        <option value="Bonos" {% if orden.tipo_pago == "Bonos" %} selected {% endif %}>Bonos</option>
+                        <option value="Afp" {% if orden.tipo_pago == "Afp" %} selected {% endif %}>AFP</option>
+                        <option value="Gratificaciones" {% if orden.tipo_pago == "Gratificaciones" %} selected {% endif %}>Gratificaciones</option>
+                        <option value="Liquidaciones" {% if orden.tipo_pago == "Liquidaciones" %} selected {% endif %}>Liquidaciones</option>
+                        <option value="Vacaciones" {% if orden.tipo_pago == "Vacaciones" %} selected {% endif %}>Vacaciones</option>
+                        <option value="Cts" {% if orden.tipo_pago == "Cts" %} selected {% endif %}>CTS</option>
+                        <option value="ReciboHonorarios" {% if orden.tipo_pago == "ReciboHonorarios" %} selected {% endif %}>Recibo por Honorarios</option>
+                        <option value="ProveedoresFactura" {% if orden.tipo_pago == "ProveedoresFactura" %} selected {% endif %}>Proveedores con Factura</option>
+                        <option value="ProveedoresSinFactura" {% if orden.tipo_pago == "ProveedoresSinFactura" %} selected {% endif %}>Proveedores sin Factura</option>
+                        <option value="Fraccionamiento" {% if orden.tipo_pago == "Fraccionamiento" %} selected {% endif %}>Fraccionamiento</option>
+                        <option value="Planilla" {% if orden.tipo_pago == "Planilla" %} selected {% endif %}>Planilla</option>
+                        <option value="PDT" {% if orden.tipo_pago == "PDT" %} selected {% endif %}>PDT</option>
+                        <option value="Proveedores" {% if orden.tipo_pago == "Proveedores" %} selected {% endif %}>Proveedores</option>
+                        <!-- Más opciones si necesitas -->
+                    </select>                    
+                </td>
+                <td>
+                    <select name="proveedor" form="form-{{ orden.id }}" class="input-proveedor select2">
+                        {% if orden.proveedor %}
+                        <option value="{{ orden.proveedor.id }}" selected>{{ orden.proveedor.nombre_proveedor }}</option>
+                        {% else %}
+                        <option value="" selected>Seleccionar</option>
+                        {% endif %}
+                        {% for proveedor in proveedores %}
+                        <option value="{{ proveedor.id }}">{{ proveedor.nombre_proveedor }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>{{ orden.desc_articulo }}</td>
+                <td><input class="input-corto" form="form-{{ orden.id }}" type="number" name="cantidad" value="{{ orden.cantidad }}" /></td>
+                <!--<td>{{ orden.codigo_sap }}</td> -->
+                <td><input class="input-medio" form="form-{{ orden.id }}" type="number" name="precio_actual" value="{{ orden.precio_actual }}" step="0.01" /></td>
+                <td><input class="input-corto" form="form-{{ orden.id }}" type="number" name="detraccion" value="{{ orden.detraccion }}" /></td>
+                <td id="precio-total-{{ orden.id }}">{{ orden.precio_total|floatformat:2 }}</td>
+                <!--td><input class="input-corto" form="form-{{ orden.id }}" type="number" name="cuotas" value="{{ orden.cuotas }}"></td>-->
+                <td>
+                    <input class="input-medio" form="form-{{ orden.id }}" type="date" name="fecha_pago" value="{{ orden.fecha_pago|date:'Y-m-d' }}">
+                </td>
+                <td>
+                    <form id="form-{{ orden.id }}" hx-post="{% url 'actualizar_orden_compra' orden.id %}" hx-target="#precio-total-{{ orden.id }}" hx-swap="outerHTML" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">GO!</button>
+                    </form>
+                </td>
+                <td>
+                    <form id="delete-form-{{ orden.id }}" action="{% url 'eliminar_orden_compra' orden.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Inicializa Select2 en todos los elementos select con la clase 'select2'
+        $('.select2').select2({
+            placeholder: "Seleccionar una opción",
+            allowClear: true
+        });
+
+        console.log("Select2 ha sido inicializado.");
+
+        // Manejo de cambio de selección en los selectores de clase
+        $('[name="clase"]').on('change', function() {
+            var tipoPagoSelector = $(this).closest('tr').find('[name="tipo_pago"]');
+            var selectedClase = $(this).val();
+            
+            // Limpia las opciones existentes
+            tipoPagoSelector.empty();
+
+            // Opciones disponibles por cada clase
+            var opciones = {
+                "Bancos": ["Prestamo", "Tarjeta"],
+                "Planillas": ["Sueldo", "Bonos", "Afp", "Gratificaciones", "Liquidaciones", "Vacaciones", "Cts", "ReciboHonorarios"],
+                "Servicios": ["ProveedoresFactura", "ProveedoresSinFactura"],
+                "Sunat": ["Fraccionamiento", "Planilla", "PDT"],
+                "Proveedores": ["Proveedores"]
+            };
+
+            // Añade las nuevas opciones basadas en la selección de "Clase"
+            if (opciones[selectedClase]) {
+                opciones[selectedClase].forEach(function(opcion) {
+                    tipoPagoSelector.append(new Option(opcion, opcion));
+                });
+            }
+
+            // Re-inicializa Select2 para actualizar las opciones
+            tipoPagoSelector.select2({
+                placeholder: "Seleccionar una opción",
+                allowClear: true
+            });
+        });
+    });
+</script>
+{% endblock %}

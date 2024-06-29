@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Estilos existentes */
+    .table-responsive thead th {
+        position: sticky;
+        top: 0;
+        background-color: #fff;
+        z-index: 1;
+    }
+    .table-responsive {
+        max-height: 90vh;
+        overflow-y: auto;
+        padding-top: 10px;
+    }
+    .input-corto {
+        width: 60px;
+    }
+    .input-medio {
+        width: 100px;
+    }
+    input[type="number"] {
+        text-align: right;
+    }
+    .input-proveedor {
+        width: 150px; /* Puedes ajustar este valor según tus necesidades */
+    }
+    .table th, .table td {
+        padding: 5px;
+        white-space: nowrap;
+    }
+    /* Estilo adicional para la cabecera */
+    .header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .header-flex h2 {
+        margin-bottom: 0; /* Elimina el margen inferior del título para alinearlo con el botón */
+    }
+</style>
+
+<div class="header-flex">
+    <h2>Órdenes de Compra para {{ ordenventa.observacion }}</h2>
+    <a href="{% url 'ver_ordenes_pago' ordenventa.id %}" class="btn btn-info">Ver Órdenes de Pago</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Clase</th>
+                <th>Tipo de pago</th>
+                <th>Proveedor</th>
+                <th>Descripción del Artículo</th>
+                <th>Cantidad</th>
+                <th>SAP</th>
+                <th>Precio</th>
+                <th>Detra (%)</th>
+                <th>Total</th>
+                <th>Cuotas</th>
+                <th>Fecha de pago</th>
+                <th>ACT</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orden in ordenes_compra %}
+            <tr>    
+                <td>
+                    <select name="clase" form="form-{{ orden.id }}">
+                        <option value="Bancos" {% if orden.clase == "Bancos" %} selected {% endif %}>Bancos</option>
+                        <option value="Planillas" {% if orden.clase == "Planillas" %} selected {% endif %}>Planillas</option>
+                        <option value="Servicios" {% if orden.clase == "Servicios" %} selected {% endif %}>Servicios</option>
+                        <option value="Sunat" {% if orden.clase == "Sunat" %} selected {% endif %}>Sunat</option>
+                        <option value="Proveedores" {% if orden.clase == "Proveedores" %} selected {% endif %}>Proveedores</option>
+                    </select>                    
+                </td>
+                <td>
+                    <select name="tipo_pago" form="form-{{ orden.id }}">
+                        <option value="Prestamo" {% if orden.tipo_pago == "Prestamo" %} selected {% endif %}>Préstamo</option>
+                        <option value="Tarjeta" {% if orden.tipo_pago == "Tarjeta" %} selected {% endif %}>Tarjeta</option>
+                        <option value="Sueldo" {% if orden.tipo_pago == "Sueldo" %} selected {% endif %}>Sueldo</option>
+                        <option value="Bonos" {% if orden.tipo_pago == "Bonos" %} selected {% endif %}>Bonos</option>
+                        <option value="Afp" {% if orden.tipo_pago == "Afp" %} selected {% endif %}>AFP</option>
+                        <option value="Gratificaciones" {% if orden.tipo_pago == "Gratificaciones" %} selected {% endif %}>Gratificaciones</option>
+                        <option value="Liquidaciones" {% if orden.tipo_pago == "Liquidaciones" %} selected {% endif %}>Liquidaciones</option>
+                        <option value="Vacaciones" {% if orden.tipo_pago == "Vacaciones" %} selected {% endif %}>Vacaciones</option>
+                        <option value="Cts" {% if orden.tipo_pago == "Cts" %} selected {% endif %}>CTS</option>
+                        <option value="ReciboHonorarios" {% if orden.tipo_pago == "ReciboHonorarios" %} selected {% endif %}>Recibo por Honorarios</option>
+                        <option value="ProveedoresFactura" {% if orden.tipo_pago == "ProveedoresFactura" %} selected {% endif %}>Proveedores con Factura</option>
+                        <option value="ProveedoresSinFactura" {% if orden.tipo_pago == "ProveedoresSinFactura" %} selected {% endif %}>Proveedores sin Factura</option>
+                        <option value="Fraccionamiento" {% if orden.tipo_pago == "Fraccionamiento" %} selected {% endif %}>Fraccionamiento</option>
+                        <option value="Planilla" {% if orden.tipo_pago == "Planilla" %} selected {% endif %}>Planilla</option>
+                        <option value="PDT" {% if orden.tipo_pago == "PDT" %} selected {% endif %}>PDT</option>
+                        <option value="Proveedores" {% if orden.tipo_pago == "Proveedores" %} selected {% endif %}>Proveedores</option>
+                        <!-- Más opciones si necesitas -->
+                    </select>                    
+                </td>
+                <td>
+                    <select name="proveedor" form="form-{{ orden.id }}" class="input-proveedor">
+                        {% if orden.proveedor %}
+                        <option value="{{ orden.proveedor.id }}" selected>{{ orden.proveedor.nombre_proveedor }}</option>
+                        {% else %}
+                        <option value="" selected>Seleccionar</option>
+                        {% endif %}
+                        {% for proveedor in proveedores %}
+                        <option value="{{ proveedor.id }}">{{ proveedor.nombre_proveedor }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>{{ orden.desc_articulo }}</td>
+                <td><input class="input-corto" form="form-{{ orden.id }}" type="number" name="cantidad" value="{{ orden.cantidad }}" /></td>
+                <td>{{ orden.codigo_sap }}</td>
+                <td><input class="input-medio" form="form-{{ orden.id }}" type="number" name="precio_actual" value="{{ orden.precio_actual }}" /></td>
+                <td><input class="input-corto" form="form-{{ orden.id }}" type="number" name="detraccion" value="{{ orden.detraccion }}" /></td>
+                <td id="precio-total-{{ orden.id }}">{{ orden.precio_total }}</td>
+                <td><input class="input-corto" form="form-{{ orden.id }}" type="number" name="cuotas" value="{{ orden.cuotas }}"></td>
+                <td>
+                    <input class="input-medio" form="form-{{ orden.id }}" type="date" name="fecha_pago" value="{{ orden.fecha_pago|date:'Y-m-d' }}">
+                </td>
+                <td>
+                    <form id="form-{{ orden.id }}" hx-post="{% url 'actualizar_orden_compra' orden.id %}" hx-target="#precio-total-{{ orden.id }}" hx-swap="outerHTML" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">GO!</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+<script>
+    console.log("Cambio detectado en clase, nuevo valor: ", this.value);
+    document.addEventListener('DOMContentLoaded', function () {
+        const claseSelectors = document.querySelectorAll('[name="clase"]');
+        
+        claseSelectors.forEach(function(claseSelector) {
+            claseSelector.addEventListener('change', function() {
+                const tipoPagoSelector = this.closest('tr').querySelector('[name="tipo_pago"]');
+                const selectedClase = this.value;
+                
+                // Limpia las opciones existentes
+                while (tipoPagoSelector.firstChild) {
+                    tipoPagoSelector.removeChild(tipoPagoSelector.firstChild);
+                }
+                
+                // Opciones disponibles por cada clase
+                const opciones = {
+                    "Bancos": ["Prestamo", "Tarjeta"],
+                    "Planillas": ["Sueldo", "Bonos", "Afp", "Gratificaciones" ,"Liquidaciones","Vacaciones","Cts","ReciboHonorarios"],
+                    "Servicios": ["ProveedoresFactura","ProveedoresSinFactura"],
+                    "Sunat":["Fraccionamiento","Planilla", "PDT"],
+                    "Proveedores":["Proveedores"]
+                    // Añade las opciones para el resto de clases aquí
+                };
+                
+                // Añade las nuevas opciones basadas en la selección de "Clase"
+                if (opciones[selectedClase]) {
+                    opciones[selectedClase].forEach(function(opcion) {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = opcion;
+                        optionElement.textContent = opcion; // Ajusta según necesites
+                        tipoPagoSelector.appendChild(optionElement);
+                    });
+                }
+            });
+        });
+    });
+    </script>
+    
+{% endblock %}

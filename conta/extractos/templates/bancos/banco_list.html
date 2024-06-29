@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Lista de Bancos</h1>
+        <div>
+            <!-- Botón para crear banco -->
+            <button class="btn btn-primary me-2" hx-get="{% url 'banco_create' %}" hx-trigger="click" hx-target="#formulario-banco" hx-swap="outerHTML">Crear Banco</button>
+            <!-- Botón para abrir el modal de carga de extracto, ahora apuntando a un nuevo contenedor específico -->
+            <button class="btn btn-primary me-2" hx-get="{% url 'cargar_extractos_banco' %}" hx-trigger="click" hx-target="#formulario-extracto" hx-swap="outerHTML">Cargar Extracto</button>
+        </div>
+    </div>
+
+    <!-- Contenedor para el formulario de bancos -->
+    <div id="formulario-banco"></div>
+    
+    <!-- Contenedor adicional para el formulario de carga de extractos -->
+    <div id="formulario-extracto"></div>
+
+    <!-- Lista de bancos -->
+    <div class="list-group">
+        {% for banco in bancos %}
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <span>{{ banco.nombre_banco }}</span>
+                <div class="btn-group" role="group" aria-label="Acciones de Banco">
+                    <button class="btn btn-info btn-sm me-1" hx-get="{% url 'banco_update' banco.id %}" hx-target="#formulario-banco" hx-swap="outerHTML">Editar</button>
+                    <button class="btn btn-danger btn-sm me-1" hx-delete="{% url 'banco_delete' banco.id %}" hx-target="#formulario-banco" hx-swap="outerHTML" hx-confirm="¿Estás seguro de que deseas eliminar este banco?">Eliminar</button>
+                    <a href="{% url 'extractos_por_banco' banco.id %}" class="btn btn-info btn-sm me-1">Ver extractos Bancarios</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

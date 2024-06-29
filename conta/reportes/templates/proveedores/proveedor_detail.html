@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block styles  %}
+<style>
+    .custom-card {
+        border-radius: 15px;
+        text-align: center;
+        font-size: 1.5rem;
+    }
+    .custom-card .card-title {
+        font-size: 2rem;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Detalles del Proveedor -->
+        <div class="col-md-6">
+            <h1>Detalle del Proveedor</h1>
+            <p><strong>Nombre del Proveedor:</strong> {{ proveedor.nombre_proveedor }}</p>
+            <p><strong>RUC/DNI:</strong> {{ proveedor.ruc_dni }}</p>
+            <p><strong>Nombre del Banco:</strong> {{ proveedor.nombre_banco }}</p>
+            <p><strong>Número de Cuenta:</strong> {{ proveedor.nro_cuenta }}</p>
+            <p><strong>Moneda:</strong> {{ proveedor.get_moneda_display }}</p>
+            <p><strong>Número de Cuenta Interbancario:</strong> {{ proveedor.nro_cuenta_interbancario }}</p>
+        </div>
+
+        <!-- Tarjetas de Totales -->
+        <div class="col-md-6">
+            <div class="card mb-3 custom-card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Asignado</h5>
+                    <p class="card-text">{{ total_asignado }}</p>
+                </div>
+            </div>
+            <div class="card mb-3 custom-card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Rendido</h5>
+                    <p class="card-text">{{ total_rendido }}</p>
+                </div>
+            </div>
+            <div class="card mb-3 custom-card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Faltante</h5>
+                    <p class="card-text">{{ total_faltante }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Órdenes de Compra Asociadas</h2>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>Descripción del Artículo</th>
+                <th>Cantidad</th>
+                <th>Código SAP</th>
+                <th>Precio Total</th>
+                <th>Fecha de Pago</th>
+                <th>Fecha Pagada</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orden in ordenes_de_compra %}
+            <tr>
+                <td>{{ orden.desc_articulo }}</td>
+                <td>{{ orden.cantidad }}</td>
+                <td>{{ orden.codigo_sap }}</td>
+                <td>{{ orden.precio_total }}</td>
+                <td>{{ orden.fecha_pago }}</td>
+                <td>{{ orden.fecha_pagada }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

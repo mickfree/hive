@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Nueva Tarjeta{% endblock %}
+
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Roboto');
+
+    .content-container {
+        font-size: 14px;
+        padding: 20px;
+        margin: 0;
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 15px rgba(64, 64, 64, .7);
+        width: 50%;
+        box-sizing: border-box;
+    }
+
+    .task-list-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 15px rgba(64, 64, 64, .7);
+        width: 25%;
+        box-sizing: border-box;
+    }
+
+    .task-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .task-list::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .task-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .task-list::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    .task-list::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    .task-list-item {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .task-list-item:last-child {
+        border-bottom: none;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 10px;
+        font-size: 1em;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+    #total_time {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+
+    h2, h3 {
+        margin-bottom: 20px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        text-align: center;  /* Centramos el texto */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="form-container">
+        <h2>{{ usuario.username }} - {{ fecha }}</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_tareas">Tareas:</label>
+                <select name="tareas" id="id_tareas" class="form-control" size="15" multiple>
+                    {% for tarea in form.tareas.field.queryset %}
+                    <option value="{{ tarea.pk }}" data-time="{{ tarea.tiempo_tarea }}">
+                        {{ tarea.verbo }} {{ tarea.objeto }} ({{ tarea.tiempo_tarea }} {{ tarea.unidad_de_medida }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="id_fecha">Fecha:</label>
+                <input type="date" name="fecha" id="id_fecha" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <span id="total_time">Total Tiempo: 0 horas</span>
+        </form>
+    </div>
+    <div class="task-list-container">
+        <h3>Incompletas</h3>
+        <ul class="task-list">
+            {% for tarea in tareas_incompletas %}
+            <li class="task-list-item">
+                {{ tarea.verbo }} - {{ tarea.objeto }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="task-list-container">
+        <h3>Reprogramadas</h3>
+        <ul class="task-list">
+            {% for tarea in tareas_reprogramadas %}
+            <li class="task-list-item">
+                {{ tarea.verbo }} - {{ tarea.objeto }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('id_tareas').addEventListener('change', function() {
+        var options = this.options;
+        var totalMinutos = 0;
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].selected) {
+                totalMinutos += parseFloat(options[i].getAttribute('data-time'));
+            }
+        }
+        var totalHoras = (totalMinutos / 60).toFixed(2); // Convertir minutos a horas y redondear a dos decimales
+        document.getElementById('total_time').textContent = 'Total Tiempo: ' + totalHoras + ' horas';
+    });
+</script>
+{% endblock %}

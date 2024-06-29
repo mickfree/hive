@@ -1,0 +1,99 @@
+{% extends "base_dash.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Bancos en una fila -->
+    <div class="row justify-content-center">
+        {% for banco in bancos %}
+        <div class="col-md-2">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ banco.nombre_banco }}</h5>
+                    <p class="card-text">Monto actual: 
+                        <span class="badge bg-info text-dark">{{ banco.monto_actual }}</span>
+                    </p>
+                    <a href="{% url 'extractos_por_banco' banco.id %}" class="btn btn-primary">
+                        Ver detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Primera fila de Totales -->
+    <div class="row justify-content-center g-3 mt-4">
+        <div class="col-md-4">
+            <a href="{% url 'ingresos_detalle' %}" class="text-decoration-none text-dark">
+                <div class="card border-secondary mb-3">
+                    <div class="card-header bg-secondary text-white">Ingresos</div>
+                    <div class="card-body text-secondary">
+                        <h5 class="card-title">Total Ingresos: {{ total_ingresos }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'egresos_detalle' %}" class="text-decoration-none text-dark">
+                <div class="card border-secondary mb-3">
+                    <div class="card-header bg-secondary text-white">Egresos</div>
+                    <div class="card-body text-secondary">
+                        <h5 class="card-title">Total Egresos: {{ total_egresos }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <!-- Supongamos que no hay un enlace específico para Saldo -->
+            <div class="card border-secondary mb-3">
+                <div class="card-header bg-secondary text-white">Saldo</div>
+                <div class="card-body text-secondary">
+                    <h5 class="card-title">Saldo: {{ saldo }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Segunda fila de Totales -->
+    <div class="row justify-content-center g-3 mt-3">
+        <div class="col-md-3">
+            <a href="{% url 'venta_detalle' %}" class="text-decoration-none text-dark">
+                <div class="card border-secondary mb-3">
+                    <div class="card-header bg-secondary text-white">Ventas</div>
+                    <div class="card-body text-secondary">
+                        <h5 class="card-title">Total Ventas: {{ total_ventas }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'compra_detalle' %}" class="text-decoration-none text-dark">
+                <div class="card border-secondary mb-3">
+                    <div class="card-header bg-secondary text-white">Compras</div>
+                    <div class="card-body text-secondary">
+                        <h5 class="card-title">Total Compras: {{ total_compras }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <!-- Supongamos que no hay un enlace específico para Cuentas por Cobrar -->
+            <div class="card border-secondary mb-3">
+                <div class="card-header bg-secondary text-white">Cuentas por Cobrar</div>
+                <div class="card-body text-secondary">
+                    <h5 class="card-title">Cuentas por Cobrar: {{ cuentas_por_cobrar }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <!-- Supongamos que no hay un enlace específico para Cuentas por Pagar -->
+            <div class="card border-secondary mb-3">
+                <div class="card-header bg-secondary text-white">Cuentas por Pagar</div>
+                <div class="card-body text-secondary">
+                    <h5 class="card-title">Cuentas por Pagar: {{ cuentas_por_pagar }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

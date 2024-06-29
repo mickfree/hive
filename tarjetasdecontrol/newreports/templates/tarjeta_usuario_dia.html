@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Tarjeta de {{ tarjeta.usuario.username }} - {{ tarjeta.fecha }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Roboto');
+
+    .content-container {
+        font-size: 14px;
+        padding: 20px;
+        margin: 0;
+    }
+
+    .title-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        background-color: black;
+        color: white;
+        padding: 20px;
+        border-radius: 0.5rem;
+        font-size: 1.5em;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .title-content {
+        flex-grow: 1;
+        text-align: left;
+    }
+
+    .delete-form form {
+        display: inline-block;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        box-shadow: 0 2px 15px rgba(64, 64, 64, .7);
+        border-radius: 12px 12px 0 0;
+        overflow: hidden;
+        margin: 0;
+    }
+
+    td, th {
+        padding: 10px 15px;
+        text-align: center;
+        color: black !important;
+    }
+
+    th {
+        background-color: black !important;
+        color: #fafafa !important;
+        font-family: 'Open Sans', Sans-serif;
+        font-weight: bolder;
+        text-transform: uppercase;
+    }
+
+    tr {
+        background-color: #fafafa !important;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    tr:nth-child(even) {
+        background-color: #eeeeee !important;
+    }
+
+    tbody {
+        background-color: rgba(255, 255, 255, 0.55) !important;
+    }
+
+    .summary-container {
+        width: 100%;
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        border-radius: 0.5rem;
+        font-size: 1.2em;
+        font-family: 'Montserrat', sans-serif;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-around;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="title-container">
+        <div class="title-content">
+            Tarjeta de {{ tarjeta.usuario.username }} - {{ tarjeta.fecha }}
+        </div>
+        <div class="delete-form">
+            <form method="post" action="{% url 'eliminar_tarjeta' usuario_id=tarjeta.usuario.id dia=tarjeta.fecha.day %}">
+                {% csrf_token %}
+                <input type="hidden" name="mes" value="{{ tarjeta.fecha|date:'m' }}">
+                <input type="hidden" name="anio" value="{{ tarjeta.fecha|date:'Y' }}">
+                <button type="submit" class="btn btn-danger">Eliminar Tarjeta</button>
+            </form>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Verbo</th>
+                <th>Objeto</th>
+                <th>Orden de Venta</th>
+                <th>Cliente</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in tareas_con_hora %}
+            <tr>
+                <td>{{ item.tarea.verbo }}</td>
+                <td>{{ item.tarea.objeto }}</td>
+                <td>{{ item.tarea.orden_venta }}</td>
+                <td>{{ item.tarea.cliente }}</td>
+                <td>{{ item.start_time|date:"H:i" }}</td>
+                <td>{{ item.end_time|date:"H:i" }}</td>
+                <td>{{ item.estado }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="incident-table">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Duración (minutos)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for incident in tarjeta.incidents_list %}
+            <tr>
+                <td>{{ incident.descripcion }}</td>
+                <td>{{ incident.duracion }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="summary-container">
+        <p>Porcentaje completado: {{ porcentaje_completado }}%</p>
+        <p>Porcentaje de incidentes: {{ porcentaje_incidentes }}%</p>
+        <p>Valorización: {{ valorizacion }}</p>
+    </div>
+</div>
+{% endblock %}

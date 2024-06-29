@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Órdenes de Pago</h1>
+    <button onclick="exportarTablaExcel()" class="btn btn-success">Descargar Excel</button>
+</div>
+<table id="ordenesPagoTable" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>Orden de Venta</th>
+            <th>Proyecto</th>
+            <th>Proveedor</th>
+            <th>Descripción</th>
+            <th>Banco</th>
+            <th>Nro. Cuenta</th>
+            <th>Interbancario</th>
+            <th>Moneda</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for orden in ordenes_de_pago %}
+        <tr>
+            <td>{{ orden.codigo_sap }}</td>
+            <td>{{ ordenventa.proyecto }}</td>
+            <td>{{ orden.proveedor.nombre_proveedor|default:"No asignado" }}</td>
+            <td>{{ orden.desc_articulo }}</td>
+            <td>{{ orden.proveedor.nombre_banco|default:"N/A" }}</td>
+            <td>{{ orden.proveedor.nro_cuenta|default:"N/A" }}</td>
+            <td>{{ orden.proveedor.nro_cuenta_interbancario|default:"N/A" }}</td>
+            <td>
+                {% if orden.proveedor.moneda == 0 %}
+                    Soles
+                {% elif orden.proveedor.moneda == 1 %}
+                    Dólares
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="9">No hay órdenes de pago disponibles.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+<script>
+    function exportarTablaExcel(){
+        var wb = XLSX.utils.table_to_book(document.getElementById('ordenesPagoTable'), {sheet:"Ordenes de Pago"});
+        XLSX.writeFile(wb, "OrdenesDePago.xlsx");
+    }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#ordenesPagoTable').DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.22/i18n/Spanish.json"
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base_dash.html" %}
+
+{% block title %}Egresos{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Egresos</h1>
+    <div class="row justify-content-center align-items-center g-4 mt-3">
+        
+        <div class="col-12">
+            <h2 class="text-center text-primary">Órdenes de Compra</h2>
+            <form method="get" class="mb-3">
+                <div class="row">
+                    <div class="col-md-4 offset-md-3">
+                        <select name="clase" class="form-select" onchange="this.form.submit()">
+                            <option value="Todas" {% if clase_seleccionada == "Todas" %} selected {% endif %}>Todas</option>
+                            <option value="Bancos" {% if clase_seleccionada == "Bancos" %} selected {% endif %}>Bancos</option>
+                            <option value="Planillas" {% if clase_seleccionada == "Planillas" %} selected {% endif %}>Planillas</option>
+                            <option value="Servicios" {% if clase_seleccionada == "Servicios" %} selected {% endif %}>Servicios</option>
+                            <option value="Sunat" {% if clase_seleccionada == "Sunat" %} selected {% endif %}>Sunat</option>
+                            <option value="Proveedores" {% if clase_seleccionada == "Proveedores" %} selected {% endif %}>Proveedores</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 text-center mt-2 mt-md-0">
+                        <p class="mb-0"><strong>Total Monto Pagado:</strong></p>
+                        <p class="mb-0"><strong>S/. {{ total_monto_pagado }}</strong></p>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Clase</th>
+                            <th>Fecha</th>
+                            <th>Monto Pagado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for orden in ordenes_de_compra %}
+                        <tr>
+                            <td>{{ orden.clase }}</td>
+                            <td>{{ orden.fecha }}</td>
+                            <td>{{ orden.monto_pagado }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-12 mt-5">
+            <h2 class="text-center text-primary">Pagos del Cronograma</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Cronograma</th>
+                            <th>Fecha de Pago</th>
+                            <th>Monto para Pagar</th>
+                            <th>Monto Pagado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pago in pagos_cronograma %}
+                        <tr>
+                            <td>{{ pago.cronograma.detalle }}</td>
+                            <td>{{ pago.fecha_pago }}</td>
+                            <td>{{ pago.monto_para_pagar }}</td>
+                            <td>{{ pago.monto_pago }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Reportes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Listado de Ordenes de Venta</h2>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Código SAP - Proyecto - Observación</th>
+                <th scope="col">O. Venta</th>
+                <th scope="col">O. Compra</th>
+                <th scope="col">Utilidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orden in ordenes_venta_con_totales %}
+                <tr>
+                    <td>{{ orden.orden_venta.codigosap }} - {{ orden.orden_venta.proyecto }} - {{ orden.orden_venta.observacion }}</td>
+                    <td>${{ orden.total_bruto_items|floatformat:2 }}</td>
+                    <td>${{ orden.total_precio_orden_compra|floatformat:2 }}</td>
+                    <td>${{ orden.utilidad|floatformat:2 }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

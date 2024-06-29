@@ -1,0 +1,100 @@
+  {% extends "base.html" %}
+
+  {% block title %} Lista de Procesos {% endblock %}
+
+  {% block extra_css %}
+  <!-- Estilos de DataTables -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
+  <!-- Estilos personalizados -->
+  <style>
+      #miTablaDeProcesos {
+          border-collapse: collapse;
+          width: 100%;
+          background-color: #f4f4f4; /* Fondo de la tabla */
+      }
+
+      #miTablaDeProcesos th, #miTablaDeProcesos td {
+          border: 1px solid #ddd; /* Bordes de las celdas */
+          padding: 8px;
+      }
+
+      #miTablaDeProcesos th {
+          background-color: #007bff; /* Color de fondo para los encabezados */
+          color: white;
+          text-align: left;
+      }
+
+      /* Estilos para el hover en filas */
+      #miTablaDeProcesos tr:hover {
+          background-color: #ddd;
+      }
+  </style>
+  {% endblock %}
+
+  {% block content %}
+  <!-- Contenido principal -->  
+  <div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Procesos</h2>
+        </div>
+        <div class="col-md-6 text-md-right">
+            <h3><a href="{% url 'crear_proceso' %}" class="btn btn-primary">Crear proceso</a></h3>
+        </div>
+    </div>
+    <table id="miTablaDeProcesos" class="display table table-striped table-bordered">
+        
+        <thead>
+            <tr>
+                <th>Nombre del Proceso</th>
+                <th>Acciones</th> <!-- Columna para los botones -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for proceso in procesos %}
+            <tr>
+                <td>{{ proceso.nombre }}</td>
+                <td>
+                    <!-- Botones Editar y Eliminar -->
+                    <a href="{% url 'editar_proceso' proceso.id %}" class="btn btn-primary btn-sm">Editar</a>
+                    <a href="{% url 'eliminar_proceso' proceso.id %}"
+                    class="btn btn-danger btn-sm"
+                    hx-post="{% url 'eliminar_proceso' proceso.id %}"
+                    hx-confirm="¿Estás seguro de que quieres eliminar este proceso?"
+                    hx-target="#miTablaDeProcesos"
+                    hx-swap="outerHTML">Eliminar
+                    </a>
+
+                    <a href="{% url 'ver_proceso' proceso.id %}" class="btn btn-info btn-sm">Ver Detalles</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+  </div>
+  {% endblock %}
+
+  {% block extra_js %}
+  <!-- Scripts de DataTables y jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+
+  <script>
+        $(document).ready(function() {
+        $('#miTablaDeProcesos').DataTable({
+            responsive: true,
+            autoWidth: false,
+            pageLength: 15,  // Número de filas inicial por página
+            lengthMenu: [[, 10, 15, -1], [5, 10, 15, "Todas"]],
+            language: {
+                "url": "//cdn.datatables.net/plug-ins/1.10.22/i18n/Spanish.json"
+            }
+        });
+    });
+</script>
+
+  {% endblock %}

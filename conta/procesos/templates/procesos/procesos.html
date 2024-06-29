@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 100%; /* Ocupa todo el ancho disponible */
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: 20px;
+        margin-left: auto;
+    }
+    .main-content {
+        display: flex;
+        justify-content: space-between;
+    }
+    .align-center {
+        display: flex;
+        align-items: flex-start; /* Alinea los elementos al final */
+        gap: 10px;
+    }
+    
+    .form-row .col-md-6 {
+        display: flex; /* Flexbox para una mejor alineación */
+        width: 50%; /* Ocupa la mitad del espacio disponible */
+    }
+
+    .lista-procesos {
+        width: 75%; /* Ajusta el ancho del contenedor de la lista de procesos */
+        padding: 15px;
+        background-color: #f8f9fa;
+        margin-left: 10px; /* Espacio entre formularios y lista */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+        border-radius: 5px;
+    }
+
+    .proceso, .subproceso, .tarea {
+        background-color: #f8f9fa;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-left: 4px solid #007bff; /* Estilo para resaltar */
+    }
+
+    h1, h2, p {
+        margin: 0;
+    }
+
+    .form-control {
+        border: 2px solid #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+        padding: 0.5em 0.75em;
+    }
+
+    .btn {
+        font-weight: bold;
+        color: white;
+        background-color: #007bff;
+        border: none;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .form-section {
+        margin-bottom: 20px;
+    }
+    .form-container {
+        width: 35%; /* Usar todo el ancho disponible */ /* O un máximo que consideres adecuado */
+        margin: auto; /* Centrar si hay espacio adicional */
+    }
+
+    /* Estilos para responsividad */
+    @media (max-width: 768px) {
+        .form-container, .lista-procesos {
+            max-width: 100%; /* En pantallas más pequeñas, usar todo el ancho */
+        }
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Gestión de Procesos</h2>
+    <div style="display: flex; justify-content: space-between;">
+        <div class="form-container" style="width: 49%;">
+            <!-- Crear Proceso -->
+            <div class="form-section">
+                <form method="post" class="align-center">
+                    {% csrf_token %}
+                    <div style="flex-grow: 1;">
+                        {{ proceso_form.nombre|as_crispy_field }}
+                    </div>
+                    <button type="submit" name="submit_proceso" id="guardar-proceso-btn" class="btn btn-primary">Guardar Proceso</button>
+                </form>
+            </div>
+
+            <!-- Crear Subproceso -->
+            <div class="form-section mt-4">
+                <form method="post" class="align-center">
+                    {% csrf_token %}
+                    <div style="flex-grow: 1;">
+                        {{ subproceso_form.proceso|as_crispy_field }}
+                    </div>
+                    <div style="flex-grow: 1;">
+                        {{ subproceso_form.nombre|as_crispy_field }}
+                    </div>
+                    <button type="submit" name="submit_subproceso" class="btn btn-secondary">Guardar Subproceso</button>
+                </form>
+            </div>
+
+            <!-- Asignar Tarea -->
+            <h3>Asignar Tarea</h3>
+            <form method="post" class="form">
+                {% csrf_token %}
+                <div class="align-center flex-wrap" style="gap: 10px;">
+                    <div style="display: flex; gap: 10px; width: 100%;">
+                        <div style="flex: 1;">{{ tarea_form.subproceso|as_crispy_field }}</div>
+                        <div style="flex: 1;">{{ tarea_form.verbo|as_crispy_field }}</div>
+                    </div>
+                    <div style="display: flex; gap: 10px; width: 100%;">
+                        <div style="flex: 1;">{{ tarea_form.objeto|as_crispy_field }}</div>
+                        <div style="flex: 1;">{{ tarea_form.unidad_de_medida|as_crispy_field }}</div>
+                    </div>
+                    <div style="flex: 0 0 100%;">{{ tarea_form.tiempo_tarea|as_crispy_field }}</div>
+                </div>
+                <button type="submit" name="submit_tarea" class="btn btn-success mt-3">Guardar Tarea</button>
+            </form>
+        </div>
+
+        <!-- Lista de procesos -->
+        <div class="lista-procesos">
+            {% for proceso in procesos %}
+            <div class="proceso">
+                <h2>Proceso: {{ proceso.nombre }}</h2>
+                {% if proceso.subprocesos.all %}
+                    {% for subproceso in proceso.subprocesos.all %}
+                        <div class="subproceso">
+                            <h3>Subproceso: {{ subproceso.nombre }}</h3>
+                            {% if subproceso.tareas.all %}
+                                {% for tarea in subproceso.tareas.all %}
+                                    <div class="tarea">
+                                        <p>Tarea: {{ tarea.verbo }} {{ tarea.objeto }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>No hay tareas</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay subprocesos asociados a este proceso.</p>
+                {% endif %}
+            </div>
+            {% empty %}
+            <p>No hay procesos disponibles.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var formProceso = document.querySelector("form.proceso-form");
+        var formSubproceso = document.querySelector("form.subproceso-form");
+        var formTarea = document.querySelector("form.tarea-form");
+    
+        function resetForm(form) {
+            form.addEventListener("submit", function() {
+                setTimeout(function() { form.reset(); }, 1000);
+            });
+        }
+    
+        if (formProceso) resetForm(formProceso);
+        if (formSubproceso) resetForm(formSubproceso);
+        if (formTarea) resetForm(formTarea);
+    
+        function actualizarFoco() {
+            var procesos = document.querySelectorAll(".lista-procesos .proceso");
+            var subprocesos = document.querySelectorAll(".lista-procesos .subproceso");
+    
+            if (procesos.length === 0) {
+                var campoProceso = document.querySelector("#nombre-proceso-input");
+                if (campoProceso) campoProceso.focus();
+            } else if (subprocesos.length === 0) {
+                var campoSubproceso = document.querySelector("#nombre-subproceso-input");
+                if (campoSubproceso) campoSubproceso.focus();
+            } else {
+                var campoVerbo = document.querySelector("#verbo-tarea-input");
+                if (campoVerbo) campoVerbo.focus();
+            }
+        }
+    
+        var observer = new MutationObserver(actualizarFoco);
+        observer.observe(document.querySelector(".lista-procesos"), { childList: true, subtree: true });
+    
+        actualizarFoco(); // Ejecutar inicialmente
+    });
+    </script>
+    
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+

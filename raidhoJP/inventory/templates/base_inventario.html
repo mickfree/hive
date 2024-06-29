@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Inventario{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    {% load static %}
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="d-flex">
+        <nav class="sidebar bg-light">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column text-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <img src="{% static 'images/jp.ico' %}" alt="JP Icon" class="icon-img">
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'inventario_list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-warehouse fa-2x"></i>
+                            </div>
+                            <span>Inventario</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'equipos-list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-tools fa-2x"></i>
+                            </div>
+                            <span>Equipos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'alimentos-list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-utensils fa-2x"></i>
+                            </div>
+                            <span>Alimentos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'consumibles-list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-recycle fa-2x"></i>
+                            </div>
+                            <span>Consumibles</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'epps-list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-hard-hat fa-2x"></i>
+                            </div>
+                            <span>EPPS</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'herramientas-list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-hammer fa-2x"></i>
+                            </div>
+                            <span>Herramientas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'mano_de_obra-list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-people-carry fa-2x"></i>
+                            </div>
+                            <span>Mano de Obra</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'materiales-list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-cubes fa-2x"></i>
+                            </div>
+                            <span>Materiales</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'misc-list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-box-open fa-2x"></i>
+                            </div>
+                            <span>Misc</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'transporte-list' %}">
+                            <div class="icon-square">
+                                <i class="fas fa-truck fa-2x"></i>
+                            </div>
+                            <span>Transporte</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="content p-4">
+            <div class="container mt-4">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+    {% block extra_js %}
+    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+</body>
+</html>

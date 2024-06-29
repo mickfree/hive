@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="mb-4">Clientes</h1>
+    <div class="list-group">
+      {% for client in object_list %}
+        <a href="{% url 'client_detail' client.pk %}" class="list-group-item list-group-item-action">
+          {{ client.client_name }}
+        </a>
+      {% endfor %}
+    </div>
+    <div class="mt-4">
+      <a href="{% url 'client_add' %}" class="btn btn-primary">Añadir nuevo cliente</a>
+    </div>
+  </div>
+
+{% endblock %}
+

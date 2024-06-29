@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Eliminación</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+</head>
+<body>
+    <h1>Confirmar Eliminación</h1>
+    <p>¿Estás seguro de que deseas eliminar "{{ banco.nombre_banco }}"?</p>
+
+    <!-- Utilizar hx-post para enviar la solicitud de eliminación -->
+    <button hx-post="{% url 'banco_delete' banco.id %}" hx-method="POST" hx-confirm="¿Estás seguro de que deseas eliminar este banco?" hx-target="body" hx-swap="outerHTML">
+        Eliminar
+    </button>
+
+    <div>
+        <a href="{% url 'banco_list' %}">Cancelar</a>
+    </div>
+</body>
+<script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+      event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    });
+</script>
+</html>

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Actualizar Pagos: {{ ordenventa.observacion }}</h2>
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Proveedor</th>
+            <th>Descripción</th>
+            <th>F. Pago</th>
+            <th>F. Pagada</th>
+            <th>Monto Pagado</th>
+            <th>Nro Movimiento</th>
+            <th>Banco</th>
+            <th>Comprobante</th>
+            <th>ACT</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for orden in ordenes_de_pago %}
+        <tr id="response-{{ orden.id }}">
+            <form method="post" hx-post="{% url 'actualizar_pago' pk=orden.id %}" hx-target="#response-{{ orden.id }}" hx-swap="outerHTML" enctype="multipart/form-data">
+                {% csrf_token %}
+                <td>{{ orden.proveedor.nombre_proveedor|default:"Proveedor no asignado" }}</td>
+                <td>{{ orden.desc_articulo }}</td>
+                <td>{{ orden.fecha_pago|date:"Y-m-d" }}</td>
+                <td><input type="date" name="fecha_pagada_{{ orden.id }}" value="{{ orden.fecha_pagada|date:'Y-m-d' }}" class="form-control"></td>
+                <td><input type="text" name="monto_pagado_{{ orden.id }}" value="{{ orden.monto_pagado }}" class="form-control"></td>
+                <td><input type="text" name="numero_movimiento_bancario_{{ orden.id }}" value="{{ orden.numero_movimiento_bancario }}" class="form-control"></td>
+                <td>
+                    <select name="banco_relacionado_{{ orden.id }}" class="form-control">
+                        {% for banco in bancos %}
+                            <option value="{{ banco.id }}" {% if orden.banco_relacionado_id == banco.id %}selected{% endif %}>
+                                {{ banco.nombre_banco }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td style="text-align: center;">
+                    {% if orden.comprobante_pago %}
+                        <a href="{{ orden.comprobante_pago.url }}" target="_blank"><i class="fas fa-file-alt fa-2x"></i></a>
+                    {% else %}
+                        <i class="fas fa-times-circle fa-2x"></i>
+                    {% endif %}
+                    <label for="comprobante_pago_{{ orden.id }}"><i class="fas fa-paperclip fa-2x"></i></label>
+                    <input type="file" name="comprobante_pago_{{ orden.id }}" id="comprobante_pago_{{ orden.id }}" accept=".pdf" class="form-control" style="display:none;">
+                    <span id="file_name_{{ orden.id }}"></span>
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-sync-alt"></i></button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(function(input) {
+            input.addEventListener('change', function(event) {
+                var fileName = event.target.files[0].name;
+                var fileId = event.target.id;
+                document.querySelector('span[id="file_name_' + fileId.replace('comprobante_pago_', '') + '"]').textContent = fileName;
+            });
+        });
+    });
+</script>
+{% endblock %}

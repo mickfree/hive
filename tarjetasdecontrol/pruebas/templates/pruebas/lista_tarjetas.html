@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+
+{% load l10n %}
+
+{% block title %}Lista de Tarjetas{% endblock %}
+{% block extra_css %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Roboto');
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .content-container {
+        font-size: 14px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .title-container {
+        width: 100%;
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        border-radius: 0.5rem;
+        font-size: 1.5em;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .title-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .title-content p {
+        margin: 0 10px; /* Añadido margen para separar los porcentajes */
+    }
+
+    .btn-whatsapp {
+        display: inline-block;
+        color: white;
+        background-color: #25D366;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        text-decoration: none;
+        margin-left: 10px;
+    }
+
+    .btn-whatsapp:hover {
+        background-color: #1EBE57;
+    }
+
+    .btn-whatsapp i {
+        margin-right: 5px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        box-shadow: 0 2px 15px rgba(64, 64, 64, .7);
+        border-radius: 12px 12px 0 0;
+        overflow: hidden;
+        margin: 0;
+    }
+
+    td, th {
+        padding: 10px 15px;
+        text-align: center;
+        color: black !important;
+    }
+
+    th {
+        background-color: black !important;
+        color: #fafafa !important;
+        font-family: 'Open Sans', Sans-serif;
+        font-weight: bolder;
+        text-transform: uppercase;
+    }
+
+    tr {
+        background-color: #fafafa !important;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    tr:nth-child(even) {
+        background-color: #eeeeee !important;
+    }
+
+    tbody {
+        background-color: rgba(255, 255, 255, 0.55) !important;
+    }
+
+    .btn-order {
+        font-size: 1.5em;
+        color: white;
+        text-decoration: none;
+        padding: 0 5px;
+    }
+
+    .btn-order:hover {
+        color: #ffcc00;
+    }
+
+    .icon-top {
+        color: #007bff;
+    }
+
+    .icon-up {
+        color: #28a745;
+    }
+
+    .icon-down {
+        color: #ffc107;
+    }
+
+    .icon-bottom {
+        color: #dc3545;
+    }
+
+    /* Estilo para la tabla de incidentes */
+    .incident-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        box-shadow: 0 2px 15px rgba(230, 253, 54, 0.85);
+        border-radius: 0 0 12px 12px; /* Borde redondeado solo en la parte inferior */
+        overflow: hidden;
+        margin: 20px 0;
+    }
+
+    .incident-table th {
+        background-color: gold !important; /* Color dorado */
+        color: black !important; /* Texto negro */
+    }
+
+    .incident-table tr:nth-child(even) {
+        background-color: #fffbf0 !important;
+    }
+
+    .incident-table tr:nth-child(odd) {
+        background-color: #fff7e6 !important;
+    }
+
+    /* Estilo para la sección de valorización */
+    .valorizacion-container {
+        box-shadow: 0 2px 15px rgba(255, 215, 0, .7); /* Sombreado dorado */
+        border-radius: 0.9rem;
+        margin-top: 20px;
+    }
+
+    /* Estilo para el select de estado */
+    .select-estado {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: white;
+        color: black;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Estilo para alinear el formulario dentro de la celda */
+    .estado-form {
+        display: inline-block;
+        margin: 0;
+    }
+
+    .estado-form select {
+        font-size: 14px;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: white;
+        color: black;
+        font-family: 'Montserrat', sans-serif;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    {% for tarjeta in tarjetas %}
+    <div class="title-container">
+        Tarjeta de control de {{ tarjeta.usuario.username|capfirst }} - {{ tarjeta.fecha|date:"l, d \d\e F \d\e Y" }}
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Verbo</th>
+                <th>Objeto</th>
+                <th>Orden de Venta</th>
+                <th>Cliente</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Act</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in tarjeta.tareas_con_hora %}
+            <tr>
+                <td>{{ item.tarea.verbo }}</td>
+                <td>{{ item.tarea.objeto }}</td>
+                <td>{{ item.tarea.orden_venta }}</td>
+                <td>{{ item.tarea.cliente }}</td>
+                <td>{{ item.calculated_start_time|date:"H:i" }}</td>
+                <td>{{ item.end_time|date:"H:i" }}</td>
+                <td>
+                    <a href="{% url 'cambiar_orden' tarjeta.id item.tarea.id 1 %}" class="btn-order"><i class="fas fa-angle-double-up icon-top"></i></a>
+                    {% if item.tarea.neworden_set.first %}
+                        <a href="{% url 'cambiar_orden' tarjeta.id item.tarea.id item.tarea.neworden_set.first.order|add:'-1' %}" class="btn-order"><i class="fas fa-angle-up icon-up"></i></a>
+                        <a href="{% url 'cambiar_orden' tarjeta.id item.tarea.id item.tarea.neworden_set.first.order|add:'1' %}" class="btn-order"><i class="fas fa-angle-down icon-down"></i></a>
+                    {% else %}
+                        <span class="btn-order disabled"><i class="fas fa-angle-up icon-up"></i></span>
+                        <span class="btn-order disabled"><i class="fas fa-angle-down icon-down"></i></span>
+                    {% endif %}
+                    <a href="{% url 'cambiar_orden' tarjeta.id item.tarea.id tarjeta.get_ordered_tareas.count %}" class="btn-order"><i class="fas fa-angle-double-down icon-bottom"></i></a>
+                </td>
+                <td>
+                    <form method="post" action="{% url 'lista_tarjetas' pk=tarjeta.id %}" class="estado-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="relacion_id" value="{{ item.relacion_id }}">
+                        <select name="estado" class="select-estado" onchange="this.form.submit()">
+                            {% for key, value in item.tarea.neworden_set.first.ESTADO_CHOICES %}
+                            <option value="{{ key }}" {% if item.estado == key %}selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="incident-table">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Duración (minutos)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for incident in tarjeta.incidents_list %}
+            <tr>
+                <td>{{ incident.descripcion }}</td>
+                <td>{{ incident.duracion }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="title-container valorizacion-container">
+        <div class="title-content">
+            <p>Tarjeta al {{ tarjeta.porcentaje_completado }}%</p>
+            <p>Incidentes: {{ tarjeta.porcentaje_incidentes }}%</p>
+            <p>Valorización: {{ valorizacion }}</p>
+        </div>
+        <a href="https://wa.me/?text=Informe%20de%20tarjeta%3A%20{{ tarjeta.usuario.username }}%20-%20{{ tarjeta.fecha|date:'l, d \d\e F \d\e Y' }}%0A%0APorcentaje%20completado%3A%20{{ tarjeta.porcentaje_completado }}%25%0A%0APorcentaje%20de%20incidentes%3A%20{{ tarjeta.porcentaje_incidentes }}%25" class="btn-whatsapp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="{% url 'descargar_excel' tarjeta.id %}" class="btn-whatsapp">Descargar Excel</a>
+
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const upButtons = document.querySelectorAll('.btn-order');
+    upButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Clicked:', this.href);
+        });
+    });
+});
+</script>
+{% endblock %}

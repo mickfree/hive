@@ -1,0 +1,43 @@
+{% extends "base_budget.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title mb-0">Presupuesto: {{ object.project.project_name }}</h2>
+      </div>
+      <div class="card-body">
+        <p class="card-text"><strong>Días:</strong> {{ object.dias }}</p>
+        <p class="card-text"><strong>Valor Total:</strong> {{ object.valor_total }}</p>
+
+        <h3 class="mt-4">Ítems</h3>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th>Cantidad</th>
+              <th>Precio Total Diario</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in object.items.all %}
+              <tr>
+                <td>{{ item.inventario.descripcion }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>{{ item.precio_total_diario }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="btn-group mt-4" role="group" aria-label="Budget actions">
+          <a href="{% url 'budget-export' object.pk %}" class="btn btn-success">Cotizacion</a>
+          <a href="{% url 'budget-edit' object.pk %}" class="btn btn-warning ms-2">Editar Items</a>
+          <a href="{% url 'budget-item-update' object.pk %}" class="btn btn-primary ms-2">Editar Cantidades</a>
+          <a href="{% url 'budget-delete' object.pk %}" class="btn btn-danger ms-2">Eliminar</a>
+          <a href="{% url 'budget-list' %}" class="btn btn-secondary ms-2">Volver</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

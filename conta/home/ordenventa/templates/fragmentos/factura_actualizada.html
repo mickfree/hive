@@ -1,0 +1,32 @@
+<!-- fragmentos/factura_actualizada.html -->
+<div class="alert alert-success" role="alert">
+    Factura actualizada con éxito.
+</div>
+
+<dl class="row">
+  <dt class="col-sm-3">Serie y Correlativo</dt>
+  <dd class="col-sm-9">{{ factura.serie_correlativo }}</dd>
+
+  <dt class="col-sm-3">Fecha de Emisión</dt>
+  <dd class="col-sm-9">{{ factura.fecha_emision }}</dd>
+
+  <dt class="col-sm-3">Cliente</dt>
+  <dd class="col-sm-9">{{ factura.cliente }}</dd>
+
+  <dt class="col-sm-3">RUC Cliente</dt>
+  <dd class="col-sm-9">{{ factura.ruc_cliente }}</dd>
+
+  <dt class="col-sm-3">Detraccion</dt>
+  <dd class="col-sm-9">{{ factura.detraccion }}</dd>
+
+  <dt class="col-sm-3">Tipo de Moneda</dt>
+  <dd class="col-sm-9">{{ factura.tipo_moneda }}</dd>
+
+  <dt class="col-sm-3">Descripción</dt>
+  <dd class="col-sm-9">{{ factura.descripcion }}</dd>
+
+  <dt class="col-sm-3">Monto neto a cobrar</dt>
+  <dd class="col-sm-9">{{ factura.monto_neto_cobrar }}</dd>
+
+  <!-- Agrega más elementos según necesites mostrar más campos -->
+</dl>

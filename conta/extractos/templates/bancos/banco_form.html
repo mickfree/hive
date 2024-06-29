@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">{% if form.instance.pk %}Editar Banco{% else %}Crear Banco{% endif %}</h1>
+
+    <!-- Contenedor específico para el formulario -->
+    <div id="formulario-banco" class="card">
+        <div class="card-body">
+            <form method="post" {% if form.instance.pk %}hx-post="{% url 'banco_update' form.instance.pk %}"{% else %}hx-post="{% url 'banco_create' %}"{% endif %} hx-target="#formulario-banco" hx-swap="outerHTML">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="{% url 'banco_list' %}" class="btn btn-secondary">Volver a la lista</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base_dash.html" %}
+
+{% block title %}Compras{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Compras</h1>
+    <div class="row mt-3">
+        {% with current_clase=None %}
+        {% for orden in ordenes_de_compra %}
+            {% if current_clase != orden.clase %}
+                {% if not forloop.first %}
+                    </tbody>
+                    </table>
+                {% endif %}
+                <div class="col-12">
+                    <h3 class="mt-4 text-primary">{{ orden.clase }}</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover mt-2">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Artículo</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Total</th>
+                                    <th>Monto Pagado</th>
+                                    <th>Comprobante Pago</th>
+                                    <th>Banco Relacionado</th>
+                                    <th>Restante por Rendir</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                </div>
+                {% with current_clase=orden.clase %}
+                {% endwith %}
+            {% endif %}
+            <tr>
+                <td>{{ orden.desc_articulo }}</td>
+                <td>{{ orden.cantidad }}</td>
+                <td>{{ orden.precio_total }}</td>
+                <td>{{ orden.monto_pagado }}</td>
+                <td>
+                    {% if orden.comprobante_pago %}
+                        <a href="{{ orden.comprobante_pago.url }}" target="_blank">Ver Comprobante</a>
+                    {% else %}
+                        No disponible
+                    {% endif %}
+                </td>
+                <td>{{ orden.banco_relacionado }}</td>
+                <td>{{ orden.restante_rendir }}</td>
+            </tr>
+        {% endfor %}
+        {% endwith %}
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

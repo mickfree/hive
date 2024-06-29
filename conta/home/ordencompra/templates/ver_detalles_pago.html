@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Actualizar Pagos</h2>
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Descripción del Artículo</th>
+            <th>Fecha de Pago</th>
+            <th>Monto Pagado</th>
+            <th>Fecha Pagada</th>
+            <th>Comprobante de Pago</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for orden in ordenes_de_pago %}
+        <tr>
+            <form hx-post="{% url 'actualizar_pago' orden.id %}" enctype="multipart/form-data">
+                <td>{{ orden.desc_articulo }}</td>
+                <td>{{ orden.fecha_pago|date:"Y-m-d" }}</td>
+                <td>
+                    <input type="text" name="monto_pagado" value="{{ orden.monto_pagado }}" placeholder="Monto Pagado" class="form-control">
+                </td>
+                <td>
+                    <input type="date" name="fecha_pagada" value="{{ orden.fecha_pagada|date:'Y-m-d' }}" class="form-control">
+                </td>
+                <td>
+                    {% if orden.comprobante_pago %}
+                    <a href="{{ orden.comprobante_pago.url }}" target="_blank">Ver Comprobante</a>
+                    {% else %}
+                    Sin Comprobante
+                    {% endif %}
+                    <input type="file" name="comprobante_pago" accept=".pdf" class="form-control">
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

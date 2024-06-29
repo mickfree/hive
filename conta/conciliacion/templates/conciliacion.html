@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Conciliación de Órdenes de Compra y Extractos Bancarios</h1>
+<form method="get" action="">
+    <label for="banco">Seleccione un banco:</label>
+    <select name="banco" id="banco">
+        <option value="">Todos los bancos</option>
+        {% for banco in bancos %}
+        <option value="{{ banco.id }}" {% if banco.id|stringformat:"s" == request.GET.banco %}selected{% endif %}>
+            {{ banco.nombre_banco }}
+        </option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filtrar</button>
+</form>
+
+<div style="display: flex; justify-content: space-around;">
+    <div>
+        <h2>Órdenes de Compra Coincidentes</h2>
+        <ul>
+            {% for coincidencia in coincidencias %}
+                <li>{{ coincidencia.orden.proveedor__nombre_proveedor }} - {{ coincidencia.orden.monto_pagado }} - {{ coincidencia.orden.numero_movimiento_bancario }} - {{ coincidencia.orden.banco_relacionado__nombre_banco }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <h2>Extractos Bancarios Coincidentes</h2>
+        <ul>
+            {% for coincidencia in coincidencias %}
+                <li>{{ coincidencia.extracto.numero_movimiento }} - {{ coincidencia.extracto.importe }} - {{ coincidencia.extracto.banco__nombre_banco }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
