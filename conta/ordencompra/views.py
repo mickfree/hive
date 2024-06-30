@@ -1,60 +1,20 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from ordenventa.models import OrdenDeCompra, OrdenVenta
-from .models import OrdenCompra, OrdenPago
-from .forms import OrdenCompraForm, OrdenPagoForm
-from django.http import HttpResponse, JsonResponse
-from django.template.loader import render_to_string
+from django.http import JsonResponse
 from django.db.models import Q
 from django.utils.dateparse import parse_date
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from datetime import date, timedelta
+from datetime import timedelta
 from django.db import transaction
 from extractos.models import Banco
 
-def crear_orden_compra(request):
-    if request.method == "POST":
-        form = OrdenCompraForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect(
-                "lista_ordenes_compra"
-            )  # Redirige a la lista después de guardar
-    else:
-        form = OrdenCompraForm()
-
-    return render(request, "crear_orden_compra.html", {"form": form})
-
-
-# new methods :) ella no te quiere :P
-# Vista para listar las órdenes de venta
-def lista_ordenes_venta(request):
-
-    query_codigosap = request.GET.get("codigosap", "")
-    query_proyecto = request.GET.get("proyecto", "")
-
+def lista_ordenes_compra(request):
     ordenes_venta = OrdenVenta.objects.all().order_by("-id")
+    return render(
+        request, "lista_ordenes_compra.html", {"ordenes_venta": ordenes_venta}
+    )
 
-    if query_codigosap:
-        ordenes_venta = ordenes_venta.filter(codigosap__icontains=query_codigosap)
-    if query_proyecto:
-        ordenes_venta = ordenes_venta.filter(proyecto__icontains=query_proyecto)
-
-    if "HX-Request" in request.headers:
-        # Solo devuelve el fragmento de la tabla para solicitudes HTMX
-        return render(
-            request,
-            "fragmentos/tabla_ordenes_venta.html",
-            {"ordenes_venta": ordenes_venta},
-        )
-    else:
-        # Devuelve la página completa para solicitudes no HTMX
-        return render(
-            request, "lista_ordenes_venta.html", {"ordenes_venta": ordenes_venta}
-        )
-
-
-#para actulizar con el pago y comprobante:
 def ver_detalles_pago(request, ordenventa_id=None):
     ordenes_de_pago = []
     ordenventa = None
@@ -84,7 +44,6 @@ def ver_detalles_pago(request, ordenventa_id=None):
     }
     return render(request, "ver_detalles_pago.html", context)
 
-# actulaiar el html ;
 @csrf_exempt
 def actualizar_pago(request, pk):
     if request.method == 'POST':

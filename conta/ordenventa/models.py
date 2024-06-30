@@ -10,7 +10,6 @@ from django.db import models
 from django.db.models import Sum
 from decimal import Decimal
 
-
 # Definición de los modelos
 class OrdenVenta(models.Model):
     CODIGO_EMPRESA = [
@@ -209,11 +208,6 @@ class CobrosOrdenVenta(models.Model):
 
     def __str__(self):
         return f"{self.serie_correlativo} - {self.cliente_factura}"
-
-
-## nevo model de factura
-from django.db import models
-from decimal import Decimal
 
 class FacturaElectronica(models.Model):
     TIPO_COBRO_CHOICES = [

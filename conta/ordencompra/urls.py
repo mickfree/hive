@@ -1,15 +1,14 @@
 from django.urls import path
-
 from ordenventa.views import ver_ordenes_pago
 from .views import (
     cronograma_ordenes_compra,
-    lista_ordenes_venta,
+    lista_ordenes_compra,
     ver_detalles_pago,
     actualizar_pago
 )
 
 urlpatterns = [
-    path("", lista_ordenes_venta, name="lista_ordenes_venta"),
+    path("", lista_ordenes_compra, name="lista_ordenes_venta"),
     path(
         "ordenes-pago/<int:ordenventa_id>/", ver_ordenes_pago, name="ver_ordenes_pago"
     ),
