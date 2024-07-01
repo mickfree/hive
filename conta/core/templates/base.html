@@ -20,7 +20,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            width: 200px;
+            width: 80px;
             position: fixed;
             top: 0;
             left: 0;
@@ -28,12 +28,27 @@
             color: #ffffff;
             transition: width 0.3s ease;
         }
+        .sidebar.expanded {
+            width: 250px;
+        }
         .sidebar .nav-link {
             color: #ffffff;
             font-size: 16px;
             padding: 15px 20px;
             text-decoration: none;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centra los íconos y texto */
+        }
+        .sidebar.expanded .nav-link {
+            justify-content: flex-start; /* Alinea a la izquierda cuando expandido */
+        }
+        .sidebar .nav-link i {
+            margin-right: 0;
+        }
+        .sidebar.expanded .nav-link i {
+            margin-right: 10px;
         }
         .sidebar .nav-link:hover {
             background-color: #495057;
@@ -47,58 +62,110 @@
             font-weight: bold;
             background-color: #212529;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centra el texto */
+            white-space: nowrap;
+        }
+        .sidebar .sidebar-heading .nav-link {
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centra el texto JP */
+            width: 100%;
+        }
+        .sidebar .sidebar-heading .nav-link span {
+            display: inline;
+        }
+        .sidebar .nav-link span {
+            display: none;
+        }
+        .sidebar.expanded .nav-link span {
+            display: inline;
+            margin-left: 10px;
         }
         .content {
-            margin-left: 200px;
+            margin-left: 80px;
             padding: 20px;
             transition: margin-left 0.3s;
+        }
+        .sidebar.expanded + .content {
+            margin-left: 250px;
+        }
+        .toggle-button {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 24px;
+            width: 100%;
+            text-align: center;
+            padding: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centra el botón */
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div>
             <h1 class="sidebar-heading">
-                <a href="{% url 'home' %}" class="nav-link" style="color: inherit;">JP</a>
+                <a href="{% url 'home' %}" class="nav-link" style="color: inherit;">
+                    <span>JP</span>
+                </a>
             </h1>
             <ul class="nav flex-column">
                 <li class="nav-item">
+                    <button class="toggle-button" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/ordenventa">
+                        <i class="fas fa-shopping-cart"></i>
                         <span>Orden Venta</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/ordencompra">
+                        <i class="fas fa-truck"></i>
                         <span>Orden Compra</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'todas_ordenes_compra' %}">
+                        <i class="fas fa-clipboard-list"></i>
                         <span>Pedidos Activos</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link" id="linkFechaActual">
+                        <i class="fas fa-cash-register"></i>
                         <span>Caja Chica</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'banco_list' %}">
+                        <i class="fas fa-university"></i>
                         <span>Bancos</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'proveedor_list' %}">
+                        <i class="fas fa-handshake"></i>
                         <span>Proveedores</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'combined_view' %}">
+                        <i class="fas fa-file-alt"></i>
                         <span>SUNAT</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/inventario/inventario">
+                        <i class="fas fa-warehouse"></i>
                         <span>Inventario</span>
                     </a>
                 </li>
@@ -124,6 +191,21 @@
             var today = new Date();
             var date = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate().toString().padStart(2, '0');
             window.location.href = `{% url 'filtrar_ordenes_pago_por_fecha' %}?fecha_pago=` + date;
+        });
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('expanded');
+            document.querySelector('.content').classList.toggle('expanded');
+            localStorage.setItem('sidebarExpanded', sidebar.classList.contains('expanded'));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarExpanded = localStorage.getItem('sidebarExpanded') === 'true';
+            if (sidebarExpanded) {
+                document.querySelector('.sidebar').classList.add('expanded');
+                document.querySelector('.content').classList.add('expanded');
+            }
         });
     </script>
     {% block scripts %}
