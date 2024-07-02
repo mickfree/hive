@@ -1,7 +1,8 @@
+from django.http import JsonResponse
 from django.views.generic import TemplateView
-
-from .forms import NewGroupTarjetaForm
-from .utils import MONTHS, obtener_tarjetas_del_dia, verificar_tarjetas_del_mes, informe_tarjetas_del_mes
+import logging
+from .forms import BacklogForm, NewGroupTarjetaForm
+from .utils import MONTHS, create_calendar_with_tasks, obtener_tarjetas_del_dia, verificar_tarjetas_del_mes, informe_tarjetas_del_mes, verificar_y_crear_tareas
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -15,6 +16,20 @@ from django.contrib.auth.models import User
 from datetime import date, datetime, timedelta
 from django.contrib import messages
 import calendar
+from django.shortcuts import render
+from django.views import View
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from .models import Backlog, SimpleTask
+import calendar
+from datetime import datetime
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Backlog
+from .forms import BacklogForm
+import calendar
+from datetime import datetime
+
 
 class CalendarioMesView(LoginRequiredMixin, TemplateView):
     template_name = 'calendario_mes.html'
@@ -182,3 +197,58 @@ def ver_tarjeta_equipo(request):
     }
     
     return render(request, 'ver_tarjeta_equipo.html', context)
+
+
+@login_required
+def pending_tasks(request):
+    if request.method == 'POST':
+        usuario = request.user
+        mes = int(request.POST.get('mes'))
+        anio = int(request.POST.get('anio'))
+
+        # Verificar y crear tareas vacías si no existen
+        verificar_y_crear_tareas(usuario, anio, mes)
+        
+        # Redirigir a la vista del mes con las tareas creadas/verificadas
+        return redirect('monthly_tasks', mes=mes, anio=anio)
+    
+    # Obtener todas las tareas simples
+    simple_tasks = SimpleTask.objects.all()
+    return render(request, 'backlog/pending_tasks.html', {'simple_tasks': simple_tasks})
+
+@login_required
+def monthly_tasks(request, mes, anio):
+    usuario = request.user
+    backlogs = Backlog.objects.filter(
+        usuario=usuario,
+        date__year=anio,
+        date__month=mes
+    ).order_by('date')
+
+    nombre_mes = calendar.month_name[mes]
+    _, days_in_month = calendar.monthrange(anio, mes)
+    days = list(range(1, days_in_month + 1))
+    primer_dia_semana = datetime(anio, mes, 1).weekday()  # 0 para Lunes, 6 para Domingo
+
+    context = {
+        'nombre_mes': nombre_mes,
+        'anio': anio,
+        'mes': mes,
+        'backlogs': backlogs,
+        'form': BacklogForm(),
+        'days_in_month': days,
+        'primer_dia_semana': primer_dia_semana,
+    }
+    return render(request, 'backlog/monthly_tasks.html', context)
+
+@login_required
+def add_task(request, backlog_id):
+    backlog = get_object_or_404(Backlog, id=backlog_id, usuario=request.user)
+    if request.method == 'POST':
+        form = BacklogForm(request.POST, instance=backlog)
+        if form.is_valid():
+            form.save()
+            return redirect('monthly_tasks', mes=backlog.date.month, anio=backlog.date.year)
+    else:
+        form = BacklogForm(instance=backlog)
+    return render(request, 'backlog/add_task.html', {'form': form, 'backlog': backlog})

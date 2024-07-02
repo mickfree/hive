@@ -5,6 +5,13 @@ from datetime import date, timedelta
 from django.utils import timezone
 from pruebas.models import NewTarjeta
 from django.contrib.auth.models import User
+from .models import Backlog
+from datetime import datetime
+import calendar
+from .models import Backlog, SimpleTask
+from datetime import datetime
+import calendar
+
 
 
 def verificar_tarjetas_del_mes(usuario):
@@ -96,4 +103,39 @@ def obtener_tarjetas_del_dia(fecha=None):
     
     return tarjetas_del_dia
 
+#backlog
+def verificar_y_crear_tareas(usuario, anio, mes):
+    # Obtener el número de días del mes
+    dias_del_mes = calendar.monthrange(anio, mes)[1]
 
+    # Crear una tarea simple predeterminada si no existe
+    simple_task, created = SimpleTask.objects.get_or_create(descripcion="Tarea predeterminada")
+
+    # Verificar y crear tareas vacías para cada día del mes
+    for dia in range(1, dias_del_mes + 1):
+        fecha = datetime(anio, mes, dia).date()
+        if not Backlog.objects.filter(usuario=usuario, date=fecha).exists():
+            backlog = Backlog.objects.create(usuario=usuario, date=fecha)
+            backlog.simple_tasks.add(simple_task)
+
+
+def create_calendar_with_tasks(anio, mes, tareas):
+    calendar_month = []
+    cal = calendar.Calendar(firstweekday=0)
+    for week in cal.monthdatescalendar(anio, mes):
+        week_data = []
+        for day in week:
+            day_data = {
+                'date': day,
+                'day': day.day,
+                'backlog_id': None,
+                'tareas': []
+            }
+            if day.month == mes:
+                for tarea in tareas:
+                    if tarea.date == day:
+                        day_data['backlog_id'] = tarea.id
+                        day_data['tareas'].append(tarea)
+            week_data.append(day_data)
+        calendar_month.append(week_data)
+    return calendar_month

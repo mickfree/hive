@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Pending Tasks</h2>
+<ul>
+    {% for task in simple_tasks %}
+        <li>{{ task.descripcion }} ({{ task.priority }})</li>
+    {% endfor %}
+</ul>
+
+<h2>Select Month and Year</h2>
+<form method="post" action="{% url 'pending_tasks' %}">
+    {% csrf_token %}
+    <label for="mes">Month:</label>
+    <input type="number" name="mes" id="mes" min="1" max="12" required>
+    <label for="anio">Year:</label>
+    <input type="number" name="anio" id="anio" min="1900" max="2100" required>
+    <button type="submit">View Backlog</button>
+</form>
+{% endblock %}

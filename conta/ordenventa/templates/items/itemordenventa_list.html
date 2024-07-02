@@ -49,11 +49,12 @@
             <tr>
                 <th>Artículo</th>
                 <th>Descripción</th>
-                <th>Cantidad</th>
-                <th>UND</th>
-                <th>TOTAL</th>
+                <th>CAN</th>
+                <th>PRECIO</th>
+                <th>P.TOTAL</th>
                 <th>Pedir</th>
-                <th>RESTANTE</th>
+                <th>CAN.RES</th> <!-- Nueva columna para cantidad_restante -->
+                <th>TOT.RES</th> <!-- Nueva columna para bruto_restante -->
                 <th>Act</th>
             </tr>
         </thead>
@@ -71,7 +72,8 @@
                         <input type="hidden" name="item_id" value="{{ item.pk }}">
                         <input type="number" name="cantidad_pedida" value="{{ item.cantidad_pedida }}" class="form-control form-control-sm text-center">
                 </td>
-                <td>{{ item.bruto_restante }}</td>
+                <td>{{ item.cantidad_restante }}</td> <!-- Mostrar cantidad_restante calculada -->
+                <td>{{ item.bruto_restante }}</td> <!-- Mostrar bruto_restante -->
                 <td>
                         <input type="hidden" name="solicitar_nueva_orden" value="True">
                         <button type="submit" class="btn btn-primary btn-sm">Pedir</button>

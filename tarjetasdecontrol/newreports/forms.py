@@ -1,6 +1,9 @@
 from django import forms
 from pruebas.models import NewTarjeta, NewTarea
 from cuentas.models import UserProfile
+from django import forms
+from .models import Backlog, SimpleTask
+
 
 class NewGroupTarjetaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -30,3 +33,14 @@ class NewGroupTarjetaForm(forms.ModelForm):
                 'type': 'date'
             }),
         }
+class BacklogForm(forms.ModelForm):
+    simple_tasks = forms.ModelMultipleChoiceField(
+        queryset=SimpleTask.objects.all(),
+        required=True,
+        widget=forms.CheckboxSelectMultiple,
+        label='Tareas Simples'
+    )
+
+    class Meta:
+        model = Backlog
+        fields = ['simple_tasks']

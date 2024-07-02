@@ -11,7 +11,7 @@ class OrdenVentaForm(forms.ModelForm):
     )   
     class Meta:
         model = OrdenVenta
-        fields = ["codigosap", "proyecto", "direccion_proyecto", "observacion", "fecha"]
+        fields = ["codigosap", "proyecto", "observacion", "fecha"]
 
     def __init__(self, *args, **kwargs):
         super(OrdenVentaForm, self).__init__(*args, **kwargs)
@@ -20,7 +20,6 @@ class OrdenVentaForm(forms.ModelForm):
         self.helper.layout = Layout(
         'codigosap',
             'proyecto',
-            'direccion_proyecto',
             'observacion',
             'fecha',
             Submit('submit', 'Guardar', css_class='btn btn-primary mt-2')

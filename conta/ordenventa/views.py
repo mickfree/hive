@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 import logging
@@ -152,9 +153,16 @@ class ItemListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ItemListView, self).get_context_data(**kwargs)
         ordenventa_id = self.kwargs.get('ordenventa_id')
-        if ordenventa_id:
+        if (ordenventa_id):
             ordenventa = get_object_or_404(OrdenVenta, pk=ordenventa_id)
             context['ordenventa'] = ordenventa
+            
+            items = ItemOrdenVenta.objects.filter(ordenventa=ordenventa)
+            for item in items:
+                total_cantidad_ordenes_compra = item.ordenes_de_compra.aggregate(Sum('cantidad'))['cantidad__sum'] or 0
+                item.cantidad_restante = (item.cantidad or 0) - total_cantidad_ordenes_compra
+
+            context['items'] = items
         return context
 
     def get_queryset(self):
@@ -179,8 +187,7 @@ class ItemListView(ListView):
 
             if ordenventa_id:
                 return redirect('filtered_item_list', ordenventa_id=ordenventa_id)
-        return redirect('item_list')
-
+        return redirect('item_list')    
 
 
 # TODO: Funcion revisada / puede ir a la app orden compra

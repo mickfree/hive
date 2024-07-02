@@ -19,7 +19,6 @@ class OrdenVenta(models.Model):
     
     codigosap = models.CharField(max_length=50)
     proyecto = models.CharField(max_length=255)
-    direccion_proyecto = models.CharField(max_length=255)
     observacion = models.CharField(max_length=255)
     fecha = models.DateField()
     empresa = models.CharField(max_length=3, choices=CODIGO_EMPRESA, default='JP')
@@ -79,7 +78,6 @@ class OrdenDeCompra(models.Model):
         related_name="ordenes_de_compra",
         verbose_name="Proveedor",
     )
-    # Elimina los campos proveedor, banco y numero_bancario, ya que ahora usarás la relación con Proveedor
     desc_articulo = models.CharField(max_length=50)
     cantidad = models.IntegerField()
     codigo_sap = models.CharField(max_length=50)
