@@ -198,8 +198,6 @@ def ver_tarjeta_equipo(request):
     
     return render(request, 'ver_tarjeta_equipo.html', context)
 
-
-@login_required
 def pending_tasks(request):
     if request.method == 'POST':
         usuario = request.user
@@ -216,7 +214,6 @@ def pending_tasks(request):
     simple_tasks = SimpleTask.objects.all()
     return render(request, 'backlog/pending_tasks.html', {'simple_tasks': simple_tasks})
 
-@login_required
 def monthly_tasks(request, mes, anio):
     usuario = request.user
     backlogs = Backlog.objects.filter(
