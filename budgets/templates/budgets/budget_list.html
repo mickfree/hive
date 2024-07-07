@@ -1,0 +1,31 @@
+{% extends "base_budget.html" %}
+{% block page_title %}<h1 class="text-center mb-0">Presupuestos</h1>{% endblock %}
+{% block content %}
+  <div class="container mt-4">
+    <!-- <h2 class="mb-4">Lista de Presupuestos</h2> -->
+    <div class="mt-4 d-flex align-items-center">
+      <h1 class="mb-40 custom-margin">Proyectos</h1>
+      <a href="{% url 'project_add' %}" class="btn btn-primary">Añadir nuevo Presupuesto</a>
+    </div>
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>Proyecto</th>
+          <th>Cliente</th>
+          <th>Días</th>
+          <th>Valor Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for budget in object_list %}
+          <tr onclick="window.location.href='{% url 'budget-detail' budget.pk %}'" style="cursor: pointer;">
+            <td>{{ budget.project.project_name }}</td>
+            <td>{{ budget.project.client.client_name }}</td>
+            <td>{{ budget.dias }}</td>
+            <td>{{ budget.valor_total }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

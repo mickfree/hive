@@ -1,0 +1,63 @@
+{% extends "base_inventario.html" %}
+
+{% block title %}{{ form.instance.pk|yesno:"Editar,Crear" }} Alimento{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">{{ form.instance.pk|yesno:"Editar,Crear" }} Alimento</h1>
+  <form method="post" class="needs-validation" novalidate>
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="{{ form.num_articulo.id_for_label }}" class="form-label">{{ form.num_articulo.label }}</label>
+        <input type="text" name="{{ form.num_articulo.name }}" id="{{ form.num_articulo.id_for_label }}" class="form-control" {% if form.num_articulo.value %}value="{{ form.num_articulo.value }}"{% endif %}>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="{{ form.descripcion.id_for_label }}" class="form-label">{{ form.descripcion.label }}</label>
+        <input type="text" name="{{ form.descripcion.name }}" id="{{ form.descripcion.id_for_label }}" class="form-control" {% if form.descripcion.value %}value="{{ form.descripcion.value }}"{% endif %}>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label for="{{ form.en_stock.id_for_label }}" class="form-label">{{ form.en_stock.label }}</label>
+        <input type="number" name="{{ form.en_stock.name }}" id="{{ form.en_stock.id_for_label }}" class="form-control" {% if form.en_stock.value %}value="{{ form.en_stock.value }}"{% endif %}>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="{{ form.codigo_barras.id_for_label }}" class="form-label">{{ form.codigo_barras.label }}</label>
+        <input type="text" name="{{ form.codigo_barras.name }}" id="{{ form.codigo_barras.id_for_label }}" class="form-control" {% if form.codigo_barras.value %}value="{{ form.codigo_barras.value }}"{% endif %}>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="{{ form.grupo_articulos.id_for_label }}" class="form-label">{{ form.grupo_articulos.label }}</label>
+        <input type="text" name="{{ form.grupo_articulos.name }}" id="{{ form.grupo_articulos.id_for_label }}" class="form-control" {% if form.grupo_articulos.value %}value="{{ form.grupo_articulos.value }}"{% endif %}>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label for="{{ form.fabricante.id_for_label }}" class="form-label">{{ form.fabricante.label }}</label>
+        <input type="text" name="{{ form.fabricante.name }}" id="{{ form.fabricante.id_for_label }}" class="form-control" {% if form.fabricante.value %}value="{{ form.fabricante.value }}"{% endif %}>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="{{ form.unidad_medida.id_for_label }}" class="form-label">{{ form.unidad_medida.label }}</label>
+        <input type="text" name="{{ form.unidad_medida.name }}" id="{{ form.unidad_medida.id_for_label }}" class="form-control" {% if form.unidad_medida.value %}value="{{ form.unidad_medida.value }}"{% endif %}>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="{{ form.precio_unitario_diario.id_for_label }}" class="form-label">{{ form.precio_unitario_diario.label }}</label>
+        <input type="number" step="0.01" name="{{ form.precio_unitario_diario.name }}" id="{{ form.precio_unitario_diario.id_for_label }}" class="form-control" {% if form.precio_unitario_diario.value %}value="{{ form.precio_unitario_diario.value }}"{% endif %}>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label for="{{ form.ultimo_precio_compra.id_for_label }}" class="form-label">{{ form.ultimo_precio_compra.label }}</label>
+        <input type="number" step="0.01" name="{{ form.ultimo_precio_compra.name }}" id="{{ form.ultimo_precio_compra.id_for_label }}" class="form-control" {% if form.ultimo_precio_compra.value %}value="{{ form.ultimo_precio_compra.value }}"{% endif %}>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col">
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="{% url 'alimentos-list' %}" class="btn btn-secondary">Cancelar</a>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

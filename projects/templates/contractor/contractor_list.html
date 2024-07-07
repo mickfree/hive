@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+{% block title %}Contratistas{% endblock %}
+{% block page_title %}<h1 class="text-center mb-0">Contratistas</h1>{% endblock %}
+{% block content %}
+  <div class="container mt-5">
+    <div class="mt-4 d-flex align-items-center">
+      <h1 class="mb-40 custom-margin">Contratistas</h1>
+      <a href="{% url 'contractor_add' %}" class="btn btn-success">Añadir nuevo contratista</a>
+    </div>
+    <div class="list-group">
+      {% for contractor in object_list %}
+        <a href="{% url 'contractor_detail' contractor.pk %}" class="list-group-item list-group-item-action">
+          {{ contractor.contractor_name }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

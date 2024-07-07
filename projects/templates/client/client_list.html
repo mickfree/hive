@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+{% block title %}Clientes{% endblock %}
+{% block page_title %}<h1 class="text-center mb-0">Clientes</h1>{% endblock %}
+{% block content %}
+  <div class="container mt-4">
+    <!-- <h1 class="mb-4">Clientes</h1> -->
+    <div class="mt-4 d-flex align-items-center">
+      <h1 class="mb-40 custom-margin">Clientes</h1>
+      <a href="{% url 'client_add' %}" class="btn btn-success">Añadir nuevo cliente</a> <!-- class="btn btn-primary" -->
+    </div>
+    <div class="list-group">
+      {% for client in object_list %}
+        <a href="{% url 'client_detail' client.pk %}" class="list-group-item list-group-item-action">
+          {{ client.client_name }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+{% endblock %}
+
